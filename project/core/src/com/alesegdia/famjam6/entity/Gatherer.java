@@ -4,5 +4,6 @@ public class Gatherer extends Building {
 
 	// production per second
 	public float productionRate = 0f;
+	public boolean connectedToBase = false;
 
 }

@@ -98,8 +98,23 @@ public class Scenario {
 				TextureRegion tr = this.buildingsGraphicsMap[i][j];
 				if( tr != null )
 				{
-					batch.draw(tr, i * this.scale, j * this.scale);					
+					batch.draw(tr, i * this.scale, j * this.scale);
+					drawUnconnected(batch, i, j, this.fGatherMap);
+					drawUnconnected(batch, i, j, this.pGatherMap);
+					drawUnconnected(batch, i, j, this.sGatherMap);
 				}
+			}
+		}
+	}
+	
+	public void drawUnconnected( SpriteBatch batch, int i, int j, Building[][] map )
+	{
+		if( map[i][j] != null )
+		{
+			Gatherer g = (Gatherer) map[i][j];
+			if( !g.connectedToBase )
+			{
+				batch.draw(Gfx.deleteTr, i * this.scale, j * this.scale);
 			}
 		}
 	}
@@ -248,7 +263,7 @@ public class Scenario {
 						}
 						
 						
-						
+						b.setPosition(scx, scy);
 						this.buildingsMap[scx][scy] = b;
 						this.buildingsList.add(b);
 						
@@ -270,7 +285,6 @@ public class Scenario {
 					Building b = this.buildingsMap[scx][scy];
 					if( b != null )
 					{
-						this.notifyBuildingRemoved( scx, scy, b );
 						this.buildingsList.remove((Object)b);
 						if( b instanceof Gatherer )
 						{
@@ -315,6 +329,8 @@ public class Scenario {
 						this.buildingsMap[scx][scy] = null;
 						this.buildingsGraphicsMap[scx][scy] = null;
 						okop = true;
+						this.notifyBuildingRemoved( scx, scy, b );
+
 					}
 				}
 			}
@@ -359,13 +375,111 @@ public class Scenario {
 	}
 
 	private void notifyBuildingRemoved(int scx, int scy, Building b) {
-		
+		checkAllGatherersConnectivity();
+		System.out.println("==================");
 	}
 
 	private void notifyBuildingAdded(int scx, int scy, Building b) {
-		if( b instanceof PowerTransport )
+		// check all gatherers
+		checkAllGatherersConnectivity();
+		System.out.println("==================");
+	}
+	
+	private void checkAllGatherersConnectivity()
+	{
+		for( Gatherer g : this.gathererList )
 		{
-			
+			if( g instanceof PowerPlant )
+			{
+				checkGathererConnectivity(g, this.pTransportMap);				
+			}
+			if( g instanceof FroncetiteGatherer )
+			{
+				checkGathererConnectivity(g, this.fTransportMap);				
+			}
+			if( g instanceof SandetiteGatherer )
+			{
+				checkGathererConnectivity(g, this.sTransportMap);				
+			}
+		}
+	}
+
+	private void checkGathererConnectivity(Gatherer g, Building[][] transportMap) {
+		boolean visited [][] = new boolean[terrainMap.length][];        
+        for (int i = 0; i < buildingsMap.length; i++)
+        {
+            visited[i] = new boolean[this.terrainMap[0].length];
+            
+            Arrays.fill(visited[i], false);
+        }
+
+        boolean u, d, l, r;
+        u = checkConnectivity(transportMap, this.baseMap, visited, (int)g.position.x, (int)g.position.y - 1);
+        d = checkConnectivity(transportMap, this.baseMap, visited, (int)g.position.x, (int)g.position.y + 1);
+        l = checkConnectivity(transportMap, this.baseMap, visited, (int)g.position.x - 1, (int)g.position.y);
+        r = checkConnectivity(transportMap, this.baseMap, visited, (int)g.position.x + 1, (int)g.position.y);
+
+        if( u || d || l || r )
+        {
+        	g.connectedToBase = true;
+        	System.out.println("CONNECT");
+        }
+        else
+        {
+        	g.connectedToBase = false;
+        	System.out.println("BREAKS");
+        }
+	}
+
+	private boolean checkConnectivity(Building[][] transportMap, Building[][] gatherMap, boolean[][] visited, int scx, int scy) {
+		// check using transport, gather and base maps
+		
+        for (int i = 0; i < visited.length; i++)
+        {
+            Arrays.fill(visited[i], false);
+        }
+
+		return checkConnection(transportMap, this.baseMap, visited, scx, scy, null);
+	}
+
+	private boolean checkConnection(Building[][] transportMap, Building[][] reachingMap, boolean[][] visited, int scx, int scy, List<Building> connectingBuildings)
+	{
+		// invalid coord
+		if( scx < 0 || scx >= reachingMap.length || scy < 0 || scy >= reachingMap[0].length )
+		{
+			return false;
+		}
+	
+		if( visited[scx][scy] )
+		{
+			return false;
+		}
+		
+		visited[scx][scy] = true;
+
+		// do connect!
+		if( reachingMap[scx][scy] != null )
+		{
+			if( connectingBuildings != null )
+			{
+				connectingBuildings.add(reachingMap[scx][scy]);
+			}
+			return true;
+		}
+		// no path from here
+		else if( transportMap[scx][scy] == null )
+		{
+			return false;
+		}
+		else
+		{
+			// check neighboors
+			boolean u, d, l, r;
+			u = checkConnection(transportMap, reachingMap, visited, scx, scy-1, connectingBuildings);
+			d = checkConnection(transportMap, reachingMap, visited, scx, scy+1, connectingBuildings);
+			l = checkConnection(transportMap, reachingMap, visited, scx-1, scy, connectingBuildings);
+			r = checkConnection(transportMap, reachingMap, visited, scx+1, scy, connectingBuildings);
+			return u || d || l || r;
 		}
 	}
 
