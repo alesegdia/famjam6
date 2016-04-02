@@ -23,6 +23,8 @@ public class GameplayScreen implements Screen {
 	private Scenario scenario;
 	
 	private int currentTool = 0;
+	
+	boolean isMenuOpened = false;
 
 	public GameplayScreen( GdxGame g )
 	{
@@ -82,12 +84,77 @@ public class GameplayScreen implements Screen {
 		g.font.draw(g.batch, Tool.getToolString(this.currentTool), 10, 25);
 		g.batch.end();
 		
+		if( isMenuOpened )
+		{
+			g.textCam.update();
+			g.srend.setProjectionMatrix(g.textCam.combined);
+			g.srend.setAutoShapeType(true);
+			g.srend.begin();
+			g.srend.set(ShapeType.Filled);
+			//this.debugMapRenderer.render(g.srend);
+			g.srend.setAutoShapeType(true);
+			g.srend.set(ShapeType.Filled);
+			g.srend.setColor(0.5f, 0f, 0f, 1f);
+			g.srend.rect(600, 0, 200, 600);
+			g.srend.setColor(0.3f, 0.f, 0.f, 1f);
+			g.srend.rect(605, 0, 200, 600);
+			g.srend.end();
+
+			g.batch.setProjectionMatrix(g.textCam.combined);
+			g.batch.begin();
+			g.batch.draw(Gfx.froncetiteGathererTr, 640, 400, 0, 0, 8, 8, 6, 6, 0);
+			g.batch.draw(Gfx.froncetiteTransportTr[1], 720, 400, 0, 0, 8, 8, 6, 6, 0);
+
+			g.batch.draw(Gfx.sandetiteGathererTr, 640, 340, 0, 0, 8, 8, 6, 6, 0);
+			g.batch.draw(Gfx.sandetiteTransportTr[1], 720, 340, 0, 0, 8, 8, 6, 6, 0);
+			
+			g.batch.draw(Gfx.powerPlantTr, 640, 280, 0, 0, 8, 8, 6, 6, 0);
+			g.batch.draw(Gfx.powerTransportTr[1], 720, 280, 0, 0, 8, 8, 6, 6, 0);
+			
+			g.batch.draw(Gfx.baseExtensionTr, 640, 220, 0, 0, 8, 8, 6, 6, 0);
+			
+			g.batch.draw(Gfx.deleteTr, 640, 160, 0, 0, 8, 8, 6, 6, 0);
+			g.batch.draw(Gfx.cursorTr, 720, 160, 0, 0, 8, 8, 6, 6, 0);
+
+			g.batch.draw(Gfx.froncetiteTerrainTr, 640, 70, 0, 0, 8, 8, 6, 6, 0);
+			g.font.draw(g.batch, "x100", 700, 100);
+
+			g.batch.draw(Gfx.sandetiteTerrainTr, 640, 10, 0, 0, 8, 8, 6, 6, 0);
+			g.font.draw(g.batch, "x100", 700, 40);
+
+			g.batch.end();
+			
+			int sz = 8*6;
+			if( clickIn(640, 400, sz, sz) ) this.currentTool = Tool.PLACE_FGATHER;
+			if( clickIn(720, 400, sz, sz) ) this.currentTool = Tool.PLACE_FTRANSP;
+			
+			if( clickIn(640, 340, sz, sz) ) this.currentTool = Tool.PLACE_SGATHER;
+			if( clickIn(720, 340, sz, sz) ) this.currentTool = Tool.PLACE_STRANSP;
+			
+			if( clickIn(640, 280, sz, sz) ) this.currentTool = Tool.PLACE_PWPLANT;
+			if( clickIn(720, 280, sz, sz) ) this.currentTool = Tool.PLACE_PWTRANSP;
+			
+			if( clickIn(640, 220, sz, sz) ) this.currentTool = Tool.PLACE_BASE;
+			if( clickIn(640, 160, sz, sz) ) this.currentTool = Tool.DESTROY;
+			if( clickIn(720, 160, sz, sz) ) this.currentTool = Tool.SELECT;
+		}
+		
 		Vector3 v = g.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 		g.batch.setProjectionMatrix(g.cam.combined);
 		g.batch.begin();
-		g.batch.draw(Gfx.cursorTr, Math.round(v.x), Math.round(v.y));
+		g.batch.draw(Gfx.getToolCursor(this.currentTool), Math.round(v.x), Math.round(v.y));
 		g.batch.end();
+		
 
+	}
+
+	private boolean clickIn(int x, int y, int w, int h) {
+		int mx, my;
+		mx = Gdx.input.getX();
+		my = GameConfig.WINDOW_HEIGHT - Gdx.input.getY();
+		return Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+				mx > x - w/4 && mx < x + w/4 &&
+				my > y + h/4 && my < y + 3 * h / 4 ;
 	}
 
 	private void handlePlayerInput() {
@@ -96,7 +163,6 @@ public class GameplayScreen implements Screen {
 		fcx = Gdx.input.getX();
 		fcy = Gdx.input.getY();
 		
-		System.out.println(fcx + ", " + fcy);
 		if( fcx < 0 ) fcx = 0;
 		if( fcx > 800 - 40) fcx = 800 - 40;
 
@@ -108,6 +174,11 @@ public class GameplayScreen implements Screen {
 		
 		float speed = 0.5f;
 		float scrollThreshold = 100;
+		
+		if( Gdx.input.isKeyJustPressed(Input.Keys.TAB) )
+		{
+			this.isMenuOpened = !this.isMenuOpened;
+		}
 		
 		if( Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ) speed = 1.f;
 		
