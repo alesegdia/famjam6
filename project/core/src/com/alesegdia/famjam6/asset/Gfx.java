@@ -1,5 +1,7 @@
 package com.alesegdia.famjam6.asset;
 
+import com.alesegdia.famjam6.map.Tool;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Gfx {
@@ -19,6 +21,7 @@ public class Gfx {
 	public static TextureRegion highTerrainTr;
 	
 	public static TextureRegion cursorTr;
+	public static TextureRegion deleteTr;
 	
 	
 	public static void Initialize()
@@ -44,6 +47,7 @@ public class Gfx {
 		lowTerrainTr = tileset.get(3);
 		
 		cursorTr = tileset.get(18);
+		deleteTr = tileset.get(19);
 		
 	}
 
@@ -53,6 +57,24 @@ public class Gfx {
 		{
 			trtr[i] = tileset.get(y_offset * 5 + i);
 		}
+	}
+
+
+	public static TextureRegion getToolCursor(int currentTool) {
+		switch( currentTool )
+		{
+		case Tool.DESTROY: return deleteTr;
+		case Tool.PLACE_BASE: return baseExtensionTr;
+		case Tool.PLACE_FGATHER: return froncetiteGathererTr;
+		case Tool.PLACE_FTRANSP: return froncetiteTransportTr[2];
+		case Tool.PLACE_SGATHER: return sandetiteGathererTr;
+		case Tool.PLACE_STRANSP: return sandetiteTransportTr[2];
+		case Tool.PLACE_PWPLANT: return powerPlantTr;
+		case Tool.PLACE_PWTRANSP: return powerTransportTr[2];
+		case Tool.SELECT: return cursorTr;
+	
+		}
+		return baseExtensionTr;
 	}
 	
 }
