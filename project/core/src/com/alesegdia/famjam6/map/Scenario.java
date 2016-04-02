@@ -23,6 +23,9 @@ public class Scenario {
 
 	private Building[][] buildingsMap;
 	private TextureRegion[][] buildingsGraphicsMap;
+	private Building[][] sTransportMap;
+	private Building[][] fTransportMap;
+	private Building[][] pTransportMap;
 	
 	private List<Building> buildingsList = new LinkedList<Building>();
 	private List<Gatherer> gathererList = new LinkedList<Gatherer>();
@@ -45,12 +48,19 @@ public class Scenario {
 		assert( terrainMap != null );
 		
 		this.buildingsMap = new Building[terrainMap.length][];
+		this.pTransportMap = new Building[terrainMap.length][];
+		this.fTransportMap = new Building[terrainMap.length][];
+		this.sTransportMap = new Building[terrainMap.length][];
         this.buildingsGraphicsMap = new TextureRegion[terrainMap.length][];
         
         for (int i = 0; i < buildingsMap.length; i++)
         {
             this.buildingsMap[i] = new Building[terrainMap[0].length];
             this.buildingsGraphicsMap[i] = new TextureRegion[terrainMap[0].length];
+            this.pTransportMap[i] = new Building[this.terrainMap[0].length];
+            this.fTransportMap[i] = new Building[this.terrainMap[0].length];
+            this.sTransportMap[i] = new Building[this.terrainMap[0].length];
+            
             Arrays.fill(this.buildingsMap[i], null);
             Arrays.fill(this.buildingsGraphicsMap[i], null);
         }
@@ -96,6 +106,7 @@ public class Scenario {
 					case Tool.PLACE_PWPLANT: b = new PowerPlant(); break;
 					case Tool.PLACE_SGATHER: b = new SandetiteGatherer(); break;
 					case Tool.PLACE_STRANSP: b = new SandetiteTransport(); break;
+					case Tool.PLACE_PWTRANSP: b = new PowerTransport(); break;
 					}
 	
 					// BOOM!!
@@ -120,9 +131,45 @@ public class Scenario {
 						System.out.println(vt);
 						canPlace = false;
 					}
-	
+					
 					if( canPlace )
 					{
+						if( b instanceof SandetiteTransport )
+						{
+							this.sTransportMap[scx][scy] = b;
+							this.checkTransport(this.sTransportMap, Gfx.sandetiteTransportTr, scx, scy);
+							
+							this.checkTransport(this.sTransportMap, Gfx.sandetiteTransportTr, scx-1, scy);
+							this.checkTransport(this.sTransportMap, Gfx.sandetiteTransportTr, scx+1, scy);
+							this.checkTransport(this.sTransportMap, Gfx.sandetiteTransportTr, scx, scy-1);
+							this.checkTransport(this.sTransportMap, Gfx.sandetiteTransportTr, scx, scy+1);
+							
+						}
+						
+						if( b instanceof PowerTransport )
+						{
+							this.pTransportMap[scx][scy] = b;
+							this.checkTransport(this.pTransportMap, Gfx.powerTransportTr, scx, scy);
+						
+							this.checkTransport(this.pTransportMap, Gfx.powerTransportTr, scx-1, scy);
+							this.checkTransport(this.pTransportMap, Gfx.powerTransportTr, scx+1, scy);
+							this.checkTransport(this.pTransportMap, Gfx.powerTransportTr, scx, scy-1);
+							this.checkTransport(this.pTransportMap, Gfx.powerTransportTr, scx, scy+1);
+							
+						}
+						
+						if( b instanceof FroncetiteTransport )
+						{
+							this.fTransportMap[scx][scy] = b;
+							this.checkTransport(this.fTransportMap, Gfx.froncetiteTransportTr, scx, scy);
+							
+							this.checkTransport(this.fTransportMap, Gfx.froncetiteTransportTr, scx-1, scy);
+							this.checkTransport(this.fTransportMap, Gfx.froncetiteTransportTr, scx+1, scy);
+							this.checkTransport(this.fTransportMap, Gfx.froncetiteTransportTr, scx, scy-1);
+							this.checkTransport(this.fTransportMap, Gfx.froncetiteTransportTr, scx, scy+1);
+							
+						}
+						
 						this.buildingsMap[scx][scy] = b;
 						this.buildingsList.add(b);
 						
@@ -150,6 +197,22 @@ public class Scenario {
 						{
 							this.gathererList.remove((Object)b);
 						}
+						
+						if( b instanceof SandetiteTransport )
+						{
+							this.sTransportMap[scx][scy] = null;
+						}
+						
+						if( b instanceof PowerTransport )
+						{
+							this.pTransportMap[scx][scy] = null;
+						}
+						
+						if( b instanceof FroncetiteTransport )
+						{
+							this.fTransportMap[scx][scy] = null;
+						}
+
 						this.buildingsMap[scx][scy] = null;
 						this.buildingsGraphicsMap[scx][scy] = null;
 						okop = true;
@@ -159,6 +222,31 @@ public class Scenario {
 		}
 		
 		return okop;
+	}
+	
+	private void checkTransport( Building[][] transportMatrix, TextureRegion[] transportTexs, int x, int y )
+	{
+		if( x < 0 || x >= transportMatrix.length || y < 0 || y >= transportMatrix[0].length) return;
+		
+		if( this.buildingsMap[x][y] == null ) return;
+		
+		boolean u, d, l, r;
+		u = (y-1 >= 0 && transportMatrix[x][y-1] != null);
+		d = (y+1 < transportMatrix[0].length && transportMatrix[x][y+1] != null);
+		
+		l = (x-1 >= 0 && transportMatrix[x-1][y] != null);
+		r = (x+1 < transportMatrix.length && transportMatrix[x+1][y] != null);
+		
+		if( (u || d) && (l || r) ) return;
+		if( (u || d) && (!l && !r) )
+		{
+			this.buildingsGraphicsMap[x][y] = transportTexs[0];
+		}
+		
+		if( (!u && !d) && (l || r) )
+		{
+			this.buildingsGraphicsMap[x][y] = transportTexs[1];
+		}
 	}
 	
 	public Building getBuilding( int x, int y )
