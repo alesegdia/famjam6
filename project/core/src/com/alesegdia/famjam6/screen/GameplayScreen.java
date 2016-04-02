@@ -72,9 +72,9 @@ public class GameplayScreen implements Screen {
 		//this.debugMapRenderer.render(g.srend);
 		g.srend.setAutoShapeType(true);
 		g.srend.set(ShapeType.Filled);
-		g.srend.setColor(0.5f, 0f, 0f, 1f);
+		g.srend.setColor(0.3f, 0.3f, 0.4f, 1f);
 		g.srend.rect(0, 0, 800, 50);
-		g.srend.setColor(0.3f, 0.f, 0.f, 1f);
+		g.srend.setColor(0.2f, 0.2f, 0.3f, 1f);
 		g.srend.rect(0, 0, 800, 45);
 		g.srend.end();
 		
@@ -98,10 +98,13 @@ public class GameplayScreen implements Screen {
 			//this.debugMapRenderer.render(g.srend);
 			g.srend.setAutoShapeType(true);
 			g.srend.set(ShapeType.Filled);
-			g.srend.setColor(0.5f, 0f, 0f, 1f);
+			g.srend.setColor(0.3f, 0.3f, 0.4f, 1f);
 			g.srend.rect(600, 0, 200, 600);
-			g.srend.setColor(0.3f, 0.f, 0.f, 1f);
+			g.srend.setColor(0.2f, 0.2f, 0.3f, 1f);
 			g.srend.rect(605, 0, 200, 600);
+			
+			g.srend.setColor(0,0,0,1);
+			g.srend.rect(620, 20, 160, 240);
 			g.srend.end();
 
 			g.batch.setProjectionMatrix(g.textCam.combined);
