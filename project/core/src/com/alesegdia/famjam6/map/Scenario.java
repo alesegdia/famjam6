@@ -198,5 +198,13 @@ public class Scenario {
 	{
 		return new Vector2((float)Math.floor(x / scale), (float)Math.floor(y / scale));
 	}
+
+	public float widthInTiles() {
+		return this.buildingsMap.length;
+	}
+
+	public float heightInTiles() {
+		return this.buildingsMap[0].length;
+	}
 	
 }

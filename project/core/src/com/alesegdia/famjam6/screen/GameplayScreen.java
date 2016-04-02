@@ -98,8 +98,16 @@ public class GameplayScreen implements Screen {
 		if( Gdx.input.isKeyPressed(Input.Keys.W) ) realCamPos.y += speed;
 		if( Gdx.input.isKeyPressed(Input.Keys.S) ) realCamPos.y -= speed;
 
-		if( realCamPos.x < 0 ) realCamPos.x = 0 ;
-		if( realCamPos.y < 0 ) realCamPos.y = 0 ;
+		float l = GameConfig.VIEWPORT_WIDTH / 2f;
+		float b = GameConfig.VIEWPORT_HEIGHT / 2f;
+		float r = this.scenario.widthInTiles() * 8f - GameConfig.VIEWPORT_WIDTH / 2f;
+		float t = this.scenario.heightInTiles() * 8f - GameConfig.VIEWPORT_HEIGHT / 2f;
+		
+		if( realCamPos.x < l ) realCamPos.x = l ;
+		if( realCamPos.y < b ) realCamPos.y = b ;
+		
+		if( realCamPos.x > r ) realCamPos.x = r ;
+		if( realCamPos.y > t ) realCamPos.y = t ;
 		
 		float k = 1;
 		g.cam.position.x = Math.round(realCamPos.x * k) / k;
