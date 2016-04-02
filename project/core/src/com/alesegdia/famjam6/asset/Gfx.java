@@ -18,6 +18,8 @@ public class Gfx {
 	public static TextureRegion lowTerrainTr;
 	public static TextureRegion highTerrainTr;
 	
+	public static TextureRegion cursorTr;
+	
 	
 	public static void Initialize()
 	{
@@ -40,6 +42,8 @@ public class Gfx {
 		sandetiteTerrainTr = tileset.get(0);
 		highTerrainTr = tileset.get(2);
 		lowTerrainTr = tileset.get(3);
+		
+		cursorTr = tileset.get(18);
 		
 	}
 
