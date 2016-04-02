@@ -2,6 +2,7 @@ package com.alesegdia.famjam6.asset;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -39,6 +40,7 @@ public class Spritesheet {
 
 	public Spritesheet(String path, int xtiles, int ytiles) {
 		Texture pt = new Texture(Gdx.files.internal(path));
+		pt.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		TextureRegion tr = new TextureRegion();
 		tr.setRegion(pt);
 		this.sheet = tr;
