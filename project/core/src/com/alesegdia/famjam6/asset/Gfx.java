@@ -22,11 +22,15 @@ public class Gfx {
 	
 	public static TextureRegion cursorTr;
 	public static TextureRegion deleteTr;
+	public static TextureRegion noPowerTr;
+	public static TextureRegion powerTr;
 	
-	
+	public static TextureRegion froncetiteSymTr;
+	public static TextureRegion sandetiteSymTr;
+
 	public static void Initialize()
 	{
-		tileset = new Spritesheet("tileset5x4.png", 4, 5);
+		tileset = new Spritesheet("tileset5x4.png", 5, 5);
 		froncetiteGathererTr = tileset.get(4);
 		sandetiteGathererTr = tileset.get(8);
 		baseExtensionTr = tileset.get(14);
@@ -48,6 +52,12 @@ public class Gfx {
 		
 		cursorTr = tileset.get(18);
 		deleteTr = tileset.get(19);
+		
+		noPowerTr = tileset.get(20);
+		powerTr = tileset.get(21);
+		
+		sandetiteSymTr = tileset.get(23);
+		froncetiteSymTr = tileset.get(22);
 		
 	}
 
