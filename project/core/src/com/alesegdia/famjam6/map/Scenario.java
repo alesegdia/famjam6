@@ -79,76 +79,81 @@ public class Scenario {
 		int scx = scaleCoord(x);
 		int scy = scaleCoord(y);
 		
-		if( Tool.isPlacementTool(currentTool) )
+		if( scx >= 0 && scx < this.buildingsMap.length && scy >= 0 && scy < this.buildingsMap[0].length  )
 		{
-			if( this.buildingsMap[scx][scy] == null )
+			if( Tool.isPlacementTool(currentTool) )
 			{
-
-				Building b = null;
-				switch(currentTool)
+				if( this.buildingsMap[scx][scy] == null )
 				{
-				case Tool.PLACE_BASE: b = new BaseExtension(); break;
-				case Tool.PLACE_FGATHER: b = new FroncetiteGatherer(); break;
-				case Tool.PLACE_FTRANSP: b = new FroncetiteTransport(); break;
-				case Tool.PLACE_PTRANSP: b = new PowerTransport(); break;
-				case Tool.PLACE_PWPLANT: b = new PowerPlant(); break;
-				case Tool.PLACE_SGATHER: b = new SandetiteGatherer(); break;
-				case Tool.PLACE_STRANSP: b = new SandetiteTransport(); break;
-				}
-
-				// BOOM!!
-				if( b == null )	assert(false);
-				
-				boolean canPlace = true;
-				
-				float vt = this.terrainMap[scx][scy];
-				if( b instanceof FroncetiteGatherer && vt >= 0.2 )
-				{
-					canPlace = false;
-				}
-				
-				if(b instanceof SandetiteGatherer && vt <= 0.8)
-				{
-					canPlace = false;
-				}
-				
-				if( b instanceof PowerPlant	&& (vt < 0.2 || vt >= 0.8) )
-				{
-					canPlace = false;
-				}
-
-				if( canPlace )
-				{
-					this.buildingsMap[scx][scy] = b;
-					this.buildingsList.add(b);
-					
-					this.buildingsGraphicsMap[scx][scy] = getBuildingTile(b, scx, scy);
-					
-					if( b instanceof Gatherer )
+	
+					Building b = null;
+					switch(currentTool)
 					{
-						this.gathererList.add((Gatherer)b);
+					case Tool.PLACE_BASE: b = new BaseExtension(); break;
+					case Tool.PLACE_FGATHER: b = new FroncetiteGatherer(); break;
+					case Tool.PLACE_FTRANSP: b = new FroncetiteTransport(); break;
+					case Tool.PLACE_PTRANSP: b = new PowerTransport(); break;
+					case Tool.PLACE_PWPLANT: b = new PowerPlant(); break;
+					case Tool.PLACE_SGATHER: b = new SandetiteGatherer(); break;
+					case Tool.PLACE_STRANSP: b = new SandetiteTransport(); break;
 					}
-					notifyBuildingAdded( scx, scy, b );
-					okop = true;					
+	
+					// BOOM!!
+					if( b == null )	assert(false);
+					
+					boolean canPlace = true;
+					
+					float vt = this.terrainMap[scx][scy];
+					if( b instanceof FroncetiteGatherer && vt >= 0.2f )
+					{
+						canPlace = false;
+					}
+					
+					if(b instanceof SandetiteGatherer && vt <= 0.8f)
+					{
+						canPlace = false;
+					}
+					
+					if( b instanceof PowerPlant	&& (vt < 0.2f || vt >= 0.8f) )
+					{
+						
+						System.out.println(vt);
+						canPlace = false;
+					}
+	
+					if( canPlace )
+					{
+						this.buildingsMap[scx][scy] = b;
+						this.buildingsList.add(b);
+						
+						this.buildingsGraphicsMap[scx][scy] = getBuildingTile(b, scx, scy);
+						
+						if( b instanceof Gatherer )
+						{
+							this.gathererList.add((Gatherer)b);
+						}
+						notifyBuildingAdded( scx, scy, b );
+						okop = true;					
+					}
 				}
 			}
-		}
-		else
-		{
-			if( currentTool == Tool.DESTROY )
+			else
 			{
-				Building b = this.buildingsMap[scx][scy];
-				if( b != null )
+				if( currentTool == Tool.DESTROY )
 				{
-					this.notifyBuildingRemoved( scx, scy, b );
-					this.buildingsList.remove((Object)b);
-					if( b instanceof Gatherer )
+					Building b = this.buildingsMap[scx][scy];
+					if( b != null )
 					{
-						this.gathererList.remove((Object)b);
+						this.notifyBuildingRemoved( scx, scy, b );
+						this.buildingsList.remove((Object)b);
+						if( b instanceof Gatherer )
+						{
+							this.gathererList.remove((Object)b);
+						}
+						this.buildingsMap[scx][scy] = null;
+						this.buildingsGraphicsMap[scx][scy] = null;
+						okop = true;
 					}
-					this.buildingsMap[scx][scy] = null;
-					this.buildingsGraphicsMap[scx][scy] = null;
-					okop = true;
 				}
 			}
 		}
