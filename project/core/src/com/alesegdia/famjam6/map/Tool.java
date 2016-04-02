@@ -9,8 +9,10 @@ public class Tool {
 	public static final int PLACE_PWPLANT = 4;
 	public static final int PLACE_PTRANSP = 5;
 	public static final int PLACE_BASE    = 6;
-	public static final int DESTROY       = 7;
-	public static final int NUM_TOOLS 	  = 8;
+	public static final int PLACE_PWTRANSP = 7;
+	public static final int DESTROY       = 8;
+	public static final int SELECT       = 9;
+	public static final int NUM_TOOLS 	  = 10;
 	
 	public static String getToolString( int t )
 	{
