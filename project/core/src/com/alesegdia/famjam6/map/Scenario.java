@@ -26,6 +26,9 @@ public class Scenario {
 	private Building[][] sTransportMap;
 	private Building[][] fTransportMap;
 	private Building[][] pTransportMap;
+	private Building[][] sGatherMap;
+	private Building[][] fGatherMap;
+	private Building[][] pGatherMap;
 	
 	private List<Building> buildingsList = new LinkedList<Building>();
 	private List<Gatherer> gathererList = new LinkedList<Gatherer>();
@@ -33,6 +36,7 @@ public class Scenario {
 	private float[][] terrainMap = null;
 	private float scale;
 	private TileTerrainRenderer terrainRenderer;
+	private Building[][] baseMap;
 	
 	public Scenario( float[][] terrainMap, float scale )
 	{
@@ -51,6 +55,10 @@ public class Scenario {
 		this.pTransportMap = new Building[terrainMap.length][];
 		this.fTransportMap = new Building[terrainMap.length][];
 		this.sTransportMap = new Building[terrainMap.length][];
+		this.pGatherMap = new Building[terrainMap.length][];
+		this.fGatherMap = new Building[terrainMap.length][];
+		this.sGatherMap = new Building[terrainMap.length][];
+		this.baseMap = new Building[terrainMap.length][];
         this.buildingsGraphicsMap = new TextureRegion[terrainMap.length][];
         
         for (int i = 0; i < buildingsMap.length; i++)
@@ -61,8 +69,21 @@ public class Scenario {
             this.fTransportMap[i] = new Building[this.terrainMap[0].length];
             this.sTransportMap[i] = new Building[this.terrainMap[0].length];
             
+            this.pGatherMap[i] = new Building[this.terrainMap[0].length];
+            this.fGatherMap[i] = new Building[this.terrainMap[0].length];
+            this.sGatherMap[i] = new Building[this.terrainMap[0].length];
+            this.baseMap[i] = new Building[this.terrainMap[0].length];
+            
             Arrays.fill(this.buildingsMap[i], null);
             Arrays.fill(this.buildingsGraphicsMap[i], null);
+
+            Arrays.fill(this.pTransportMap[i], null);
+            Arrays.fill(this.fTransportMap[i], null);
+            Arrays.fill(this.sTransportMap[i], null);
+            Arrays.fill(this.pGatherMap[i], null);
+            Arrays.fill(this.fGatherMap[i], null);
+            Arrays.fill(this.sGatherMap[i], null);
+            Arrays.fill(this.baseMap[i], null);
         }
         
 	}
@@ -115,21 +136,79 @@ public class Scenario {
 					boolean canPlace = true;
 					
 					float vt = this.terrainMap[scx][scy];
-					if( b instanceof FroncetiteGatherer && vt >= 0.2f )
+					if( b instanceof FroncetiteGatherer )
 					{
-						canPlace = false;
+						if( vt >= 0.2f )
+						{
+							canPlace = false;							
+						}
+						else
+						{
+							if( !this.checkNeighboors(scx, scy, this.fTransportMap) )
+							{
+								canPlace = false;
+							}
+						}
 					}
 					
-					if(b instanceof SandetiteGatherer && vt <= 0.8f)
+					if(b instanceof SandetiteGatherer )
 					{
-						canPlace = false;
+						if( vt <= 0.8f )
+						{
+							canPlace = false;
+						}
+						else
+						{
+							if( !this.checkNeighboors(scx, scy, this.sTransportMap) )
+							{
+								canPlace = false;
+							}
+						}
 					}
 					
-					if( b instanceof PowerPlant	&& (vt < 0.2f || vt >= 0.8f) )
+					if( b instanceof PowerPlant	)
 					{
-						
-						System.out.println(vt);
-						canPlace = false;
+						if(vt < 0.2f || vt >= 0.8f)
+						{
+							canPlace = false;						
+						}
+						else
+						{
+							if( !this.checkNeighboors(scx, scy, this.fTransportMap) )
+							{
+								canPlace = false;
+							}
+						}
+					}
+					
+					if( b instanceof BaseExtension )
+					{
+						if(vt < 0.2f || vt >= 0.8f)
+						{
+							canPlace = false;						
+						}
+					}
+					
+					if( b instanceof PowerTransport )
+					{
+						if( !this.checkNeighboors(scx, scy, pGatherMap) && !this.checkNeighboors(scx, scy, pTransportMap) && !this.checkNeighboors(scx, scy, baseMap) )
+						{
+							canPlace = false;
+						}
+					}
+					if( b instanceof FroncetiteTransport )
+					{
+						if( !this.checkNeighboors(scx, scy, fGatherMap) && !this.checkNeighboors(scx, scy, fTransportMap) && !this.checkNeighboors(scx, scy, baseMap) )
+						{
+							canPlace = false;
+						}
+					}
+					if( b instanceof SandetiteTransport )
+					{
+						if( !this.checkNeighboors(scx, scy, sGatherMap) && !this.checkNeighboors(scx, scy, sTransportMap) && !this.checkNeighboors(scx, scy, baseMap) )
+						{
+							canPlace = false;
+						}
 					}
 					
 					if( canPlace )
@@ -137,38 +216,39 @@ public class Scenario {
 						if( b instanceof SandetiteTransport )
 						{
 							this.sTransportMap[scx][scy] = b;
-							this.checkTransport(this.sTransportMap, Gfx.sandetiteTransportTr, scx, scy);
-							
-							this.checkTransport(this.sTransportMap, Gfx.sandetiteTransportTr, scx-1, scy);
-							this.checkTransport(this.sTransportMap, Gfx.sandetiteTransportTr, scx+1, scy);
-							this.checkTransport(this.sTransportMap, Gfx.sandetiteTransportTr, scx, scy-1);
-							this.checkTransport(this.sTransportMap, Gfx.sandetiteTransportTr, scx, scy+1);
-							
 						}
 						
 						if( b instanceof PowerTransport )
 						{
 							this.pTransportMap[scx][scy] = b;
-							this.checkTransport(this.pTransportMap, Gfx.powerTransportTr, scx, scy);
-						
-							this.checkTransport(this.pTransportMap, Gfx.powerTransportTr, scx-1, scy);
-							this.checkTransport(this.pTransportMap, Gfx.powerTransportTr, scx+1, scy);
-							this.checkTransport(this.pTransportMap, Gfx.powerTransportTr, scx, scy-1);
-							this.checkTransport(this.pTransportMap, Gfx.powerTransportTr, scx, scy+1);
-							
 						}
 						
 						if( b instanceof FroncetiteTransport )
 						{
 							this.fTransportMap[scx][scy] = b;
-							this.checkTransport(this.fTransportMap, Gfx.froncetiteTransportTr, scx, scy);
-							
-							this.checkTransport(this.fTransportMap, Gfx.froncetiteTransportTr, scx-1, scy);
-							this.checkTransport(this.fTransportMap, Gfx.froncetiteTransportTr, scx+1, scy);
-							this.checkTransport(this.fTransportMap, Gfx.froncetiteTransportTr, scx, scy-1);
-							this.checkTransport(this.fTransportMap, Gfx.froncetiteTransportTr, scx, scy+1);
-							
 						}
+						
+						if( b instanceof SandetiteGatherer )
+						{
+							this.sGatherMap[scx][scy] = b;
+						}
+						
+						if( b instanceof PowerPlant )
+						{
+							this.pGatherMap[scx][scy] = b;
+						}
+						
+						if( b instanceof FroncetiteGatherer )
+						{
+							this.fGatherMap[scx][scy] = b;
+						}
+						
+						if( b instanceof BaseExtension )
+						{
+							this.baseMap[scx][scy] = b;
+						}
+						
+						
 						
 						this.buildingsMap[scx][scy] = b;
 						this.buildingsList.add(b);
@@ -212,6 +292,26 @@ public class Scenario {
 						{
 							this.fTransportMap[scx][scy] = null;
 						}
+						
+						if( b instanceof SandetiteGatherer )
+						{
+							this.sGatherMap[scx][scy] = null;
+						}
+						
+						if( b instanceof PowerPlant )
+						{
+							this.pGatherMap[scx][scy] = null;
+						}
+						
+						if( b instanceof FroncetiteGatherer )
+						{
+							this.fGatherMap[scx][scy] = null;
+						}
+						
+						if( b instanceof BaseExtension )
+						{
+							this.baseMap[scx][scy] = null;
+						}
 
 						this.buildingsMap[scx][scy] = null;
 						this.buildingsGraphicsMap[scx][scy] = null;
@@ -224,31 +324,21 @@ public class Scenario {
 		return okop;
 	}
 	
-	private void checkTransport( Building[][] transportMatrix, TextureRegion[] transportTexs, int x, int y )
+	private boolean checkNeighboors(int scx, int scy, Building[][] map)
 	{
-		if( x < 0 || x >= transportMatrix.length || y < 0 || y >= transportMatrix[0].length) return;
-		
-		if( this.buildingsMap[x][y] == null ) return;
-		
-		boolean u, d, l, r;
-		u = (y-1 >= 0 && transportMatrix[x][y-1] != null);
-		d = (y+1 < transportMatrix[0].length && transportMatrix[x][y+1] != null);
-		
-		l = (x-1 >= 0 && transportMatrix[x-1][y] != null);
-		r = (x+1 < transportMatrix.length && transportMatrix[x+1][y] != null);
-		
-		if( (u || d) && (l || r) ) return;
-		if( (u || d) && (!l && !r) )
-		{
-			this.buildingsGraphicsMap[x][y] = transportTexs[0];
-		}
-		
-		if( (!u && !d) && (l || r) )
-		{
-			this.buildingsGraphicsMap[x][y] = transportTexs[1];
-		}
+		Building bu, bd, bl, br;
+		bu = getNeighboor( map, scx, scy-1 );
+		bd = getNeighboor( map, scx, scy+1 );
+		bl = getNeighboor( map, scx-1, scy );
+		br = getNeighboor( map, scx+1, scy );
+		return bu != null || bd != null || bl != null || br != null;
 	}
-	
+
+	private Building getNeighboor(Building[][] map, int scx, int scy) {
+		if( scx < 0 || scx >= map.length || scy < 0 || scy >= map[0].length ) return null;
+		else return map[scx][scy];
+	}
+
 	public Building getBuilding( int x, int y )
 	{
 		return this.buildingsMap[x][y];
