@@ -32,6 +32,8 @@ public class GdxGame extends Game {
 	@Override
 	public void create () {
 		
+		Gdx.input.setCursorCatched(true);
+		
 		// create batches
 		batch = new SpriteBatch();
 		srend = new ShapeRenderer();

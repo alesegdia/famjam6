@@ -75,28 +75,46 @@ public class GameplayScreen implements Screen {
 		g.batch.setProjectionMatrix(g.textCam.combined);
 		g.batch.begin();
 		g.font.draw(g.batch, Tool.getToolString(this.currentTool), 10, 25);
-		//g.font.draw(g.batch, gac.gauge(), 50, 30);
 		g.batch.end();
 		
-
-
-		g.batch.setProjectionMatrix(g.menuCam.combined);
+		g.batch.setProjectionMatrix(g.textCam.combined);
 		g.batch.begin();
-		//g.batch.draw(Gfx.pickupsSheet.get(9), 1, 1);
+		g.font.draw(g.batch, Tool.getToolString(this.currentTool), 10, 25);
+		g.batch.end();
+		
+		Vector3 v = g.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+		g.batch.setProjectionMatrix(g.cam.combined);
+		g.batch.begin();
+		g.batch.draw(Gfx.cursorTr, Math.round(v.x), Math.round(v.y));
 		g.batch.end();
 
 	}
 
 	private void handlePlayerInput() {
 		
+		int fcx, fcy;
+		fcx = Gdx.input.getX();
+		fcy = Gdx.input.getY();
+		
+		System.out.println(fcx + ", " + fcy);
+		if( fcx < 0 ) fcx = 0;
+		if( fcx > 800 - 40) fcx = 800 - 40;
+
+		if( fcy < 38 ) fcy = 38;
+		if( fcy > 600 ) fcy = 600;
+		
+		Gdx.input.setCursorPosition(fcx, fcy);
+
+		
 		float speed = 0.5f;
+		float scrollThreshold = 100;
 		
 		if( Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ) speed = 1.f;
 		
-		if( Gdx.input.isKeyPressed(Input.Keys.A) ) realCamPos.x -= speed;
-		if( Gdx.input.isKeyPressed(Input.Keys.D) ) realCamPos.x += speed;
-		if( Gdx.input.isKeyPressed(Input.Keys.W) ) realCamPos.y += speed;
-		if( Gdx.input.isKeyPressed(Input.Keys.S) ) realCamPos.y -= speed;
+		if( Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.getX() < scrollThreshold) realCamPos.x -= speed;
+		if( Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.getX() > GameConfig.WINDOW_WIDTH - scrollThreshold) realCamPos.x += speed;
+		if( Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.getY() < scrollThreshold) realCamPos.y += speed;
+		if( Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.getY() > GameConfig.WINDOW_HEIGHT - scrollThreshold) realCamPos.y -= speed;
 
 		float l = GameConfig.VIEWPORT_WIDTH / 2f;
 		float b = GameConfig.VIEWPORT_HEIGHT / 2f;
@@ -113,8 +131,8 @@ public class GameplayScreen implements Screen {
 		g.cam.position.x = Math.round(realCamPos.x * k) / k;
 		g.cam.position.y = Math.round(realCamPos.y * k) / k;
 		
-		g.cam.position.x = realCamPos.x;
-		g.cam.position.y = realCamPos.y;
+		//g.cam.position.x = realCamPos.x;
+		//g.cam.position.y = realCamPos.y;
 		
 		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) ) this.currentTool = Tool.PLACE_FGATHER;
 		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) ) this.currentTool = Tool.PLACE_SGATHER;
