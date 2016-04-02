@@ -127,7 +127,6 @@ public class Scenario {
 					case Tool.PLACE_PWPLANT: b = new PowerPlant(); break;
 					case Tool.PLACE_SGATHER: b = new SandetiteGatherer(); break;
 					case Tool.PLACE_STRANSP: b = new SandetiteTransport(); break;
-					case Tool.PLACE_PWTRANSP: b = new PowerTransport(); break;
 					}
 	
 					// BOOM!!
@@ -174,7 +173,7 @@ public class Scenario {
 						}
 						else
 						{
-							if( !this.checkNeighboors(scx, scy, this.fTransportMap) )
+							if( !this.checkNeighboors(scx, scy, this.pTransportMap) )
 							{
 								canPlace = false;
 							}
@@ -364,7 +363,10 @@ public class Scenario {
 	}
 
 	private void notifyBuildingAdded(int scx, int scy, Building b) {
-		
+		if( b instanceof PowerTransport )
+		{
+			
+		}
 	}
 
 	int scaleCoord( float c )

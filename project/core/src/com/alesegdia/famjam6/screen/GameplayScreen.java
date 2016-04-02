@@ -102,29 +102,30 @@ public class GameplayScreen implements Screen {
 
 			g.batch.setProjectionMatrix(g.textCam.combined);
 			g.batch.begin();
-			g.batch.draw(Gfx.froncetiteGathererTr, 640, 400, 0, 0, 8, 8, 6, 6, 0);
-			g.batch.draw(Gfx.froncetiteTransportTr[1], 720, 400, 0, 0, 8, 8, 6, 6, 0);
+			int sc = 5;
+			g.batch.draw(Gfx.froncetiteGathererTr, 640, 400, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.froncetiteTransportTr[1], 720, 400, 0, 0, 8, 8, sc, sc, 0);
 
-			g.batch.draw(Gfx.sandetiteGathererTr, 640, 340, 0, 0, 8, 8, 6, 6, 0);
-			g.batch.draw(Gfx.sandetiteTransportTr[1], 720, 340, 0, 0, 8, 8, 6, 6, 0);
+			g.batch.draw(Gfx.sandetiteGathererTr, 640, 340, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.sandetiteTransportTr[1], 720, 340, 0, 0, 8, 8, sc, sc, 0);
 			
-			g.batch.draw(Gfx.powerPlantTr, 640, 280, 0, 0, 8, 8, 6, 6, 0);
-			g.batch.draw(Gfx.powerTransportTr[1], 720, 280, 0, 0, 8, 8, 6, 6, 0);
+			g.batch.draw(Gfx.powerPlantTr, 640, 280, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.powerTransportTr[1], 720, 280, 0, 0, 8, 8, sc, sc, 0);
 			
-			g.batch.draw(Gfx.baseExtensionTr, 640, 220, 0, 0, 8, 8, 6, 6, 0);
+			g.batch.draw(Gfx.baseExtensionTr, 640, 220, 0, 0, 8, 8, sc, sc, 0);
 			
-			g.batch.draw(Gfx.deleteTr, 640, 160, 0, 0, 8, 8, 6, 6, 0);
-			g.batch.draw(Gfx.cursorTr, 720, 160, 0, 0, 8, 8, 6, 6, 0);
+			g.batch.draw(Gfx.deleteTr, 640, 160, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.cursorTr, 720, 160, 0, 0, 8, 8, sc, sc, 0);
 
-			g.batch.draw(Gfx.froncetiteTerrainTr, 640, 70, 0, 0, 8, 8, 6, 6, 0);
+			g.batch.draw(Gfx.froncetiteTerrainTr, 640, 70, 0, 0, 8, 8, sc, sc, 0);
 			g.font.draw(g.batch, "x100", 700, 100);
 
-			g.batch.draw(Gfx.sandetiteTerrainTr, 640, 10, 0, 0, 8, 8, 6, 6, 0);
+			g.batch.draw(Gfx.sandetiteTerrainTr, 640, 10, 0, 0, 8, 8, sc, sc, 0);
 			g.font.draw(g.batch, "x100", 700, 40);
 
 			g.batch.end();
 			
-			int sz = 8*6;
+			int sz = 8*4;
 			if( clickIn(640, 400, sz, sz) ) this.currentTool = Tool.PLACE_FGATHER;
 			if( clickIn(720, 400, sz, sz) ) this.currentTool = Tool.PLACE_FTRANSP;
 			
@@ -132,7 +133,7 @@ public class GameplayScreen implements Screen {
 			if( clickIn(720, 340, sz, sz) ) this.currentTool = Tool.PLACE_STRANSP;
 			
 			if( clickIn(640, 280, sz, sz) ) this.currentTool = Tool.PLACE_PWPLANT;
-			if( clickIn(720, 280, sz, sz) ) this.currentTool = Tool.PLACE_PWTRANSP;
+			if( clickIn(720, 280, sz, sz) ) this.currentTool = Tool.PLACE_PTRANSP;
 			
 			if( clickIn(640, 220, sz, sz) ) this.currentTool = Tool.PLACE_BASE;
 			if( clickIn(640, 160, sz, sz) ) this.currentTool = Tool.DESTROY;
@@ -144,7 +145,6 @@ public class GameplayScreen implements Screen {
 		g.batch.begin();
 		g.batch.draw(Gfx.getToolCursor(this.currentTool), Math.round(v.x), Math.round(v.y));
 		g.batch.end();
-		
 
 	}
 
@@ -152,9 +152,9 @@ public class GameplayScreen implements Screen {
 		int mx, my;
 		mx = Gdx.input.getX();
 		my = GameConfig.WINDOW_HEIGHT - Gdx.input.getY();
-		return Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
-				mx > x - w/4 && mx < x + w/4 &&
-				my > y + h/4 && my < y + 3 * h / 4 ;
+		return  Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+				mx > x - w/2 && mx < x + w - w/2 &&
+				my > y - h/2 && my < y + h - h/2;
 	}
 
 	private void handlePlayerInput() {
@@ -182,11 +182,14 @@ public class GameplayScreen implements Screen {
 		
 		if( Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ) speed = 1.f;
 		
-		if( Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.getX() < scrollThreshold) realCamPos.x -= speed;
-		if( Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.getX() > GameConfig.WINDOW_WIDTH - scrollThreshold) realCamPos.x += speed;
-		if( Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.getY() < scrollThreshold) realCamPos.y += speed;
-		if( Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.getY() > GameConfig.WINDOW_HEIGHT - scrollThreshold) realCamPos.y -= speed;
-
+		if( !this.isMenuOpened )
+		{
+			if( Gdx.input.getX() < scrollThreshold) realCamPos.x -= speed;
+			if( Gdx.input.getX() > GameConfig.WINDOW_WIDTH - scrollThreshold) realCamPos.x += speed;
+			if( Gdx.input.getY() < scrollThreshold) realCamPos.y += speed;
+			if( Gdx.input.getY() > GameConfig.WINDOW_HEIGHT - scrollThreshold) realCamPos.y -= speed;
+		}
+		
 		float l = GameConfig.VIEWPORT_WIDTH / 2f;
 		float b = GameConfig.VIEWPORT_HEIGHT / 2f;
 		float r = this.scenario.widthInTiles() * 8f - GameConfig.VIEWPORT_WIDTH / 2f;
@@ -205,31 +208,13 @@ public class GameplayScreen implements Screen {
 		//g.cam.position.x = realCamPos.x;
 		//g.cam.position.y = realCamPos.y;
 		
-		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) ) this.currentTool = Tool.PLACE_FGATHER;
-		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) ) this.currentTool = Tool.PLACE_SGATHER;
-		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) ) this.currentTool = Tool.PLACE_FTRANSP;
-		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_4) ) this.currentTool = Tool.PLACE_STRANSP;
-		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_5) ) this.currentTool = Tool.PLACE_PWPLANT;
-		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_6) ) this.currentTool = Tool.PLACE_PTRANSP;
-		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_7) ) this.currentTool = Tool.PLACE_BASE;		
-		
-		if( Gdx.input.isKeyJustPressed(Input.Keys.Q) )
-		{
-			this.currentTool--;
-			if( this.currentTool < 0 )
-			{
-				this.currentTool = Tool.NUM_TOOLS - 1;
-			}
-		}
-		
-		if( Gdx.input.isKeyJustPressed(Input.Keys.E) )
-		{
-			this.currentTool++;
-			if( this.currentTool >= Tool.NUM_TOOLS )
-			{
-				this.currentTool = 0;
-			}
-		}
+		if( Gdx.input.isKeyJustPressed(Input.Keys.Q) ) this.currentTool = Tool.PLACE_FGATHER;
+		if( Gdx.input.isKeyJustPressed(Input.Keys.W) ) this.currentTool = Tool.PLACE_SGATHER;
+		if( Gdx.input.isKeyJustPressed(Input.Keys.A) ) this.currentTool = Tool.PLACE_FTRANSP;
+		if( Gdx.input.isKeyJustPressed(Input.Keys.S) ) this.currentTool = Tool.PLACE_STRANSP;
+		if( Gdx.input.isKeyJustPressed(Input.Keys.E) ) this.currentTool = Tool.PLACE_PWPLANT;
+		if( Gdx.input.isKeyJustPressed(Input.Keys.D) ) this.currentTool = Tool.PLACE_PTRANSP;
+		if( Gdx.input.isKeyJustPressed(Input.Keys.R) ) this.currentTool = Tool.PLACE_BASE;		
 		
 		// click
 		if( Gdx.input.justTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT) )

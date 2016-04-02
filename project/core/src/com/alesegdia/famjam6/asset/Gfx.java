@@ -70,7 +70,7 @@ public class Gfx {
 		case Tool.PLACE_SGATHER: return sandetiteGathererTr;
 		case Tool.PLACE_STRANSP: return sandetiteTransportTr[2];
 		case Tool.PLACE_PWPLANT: return powerPlantTr;
-		case Tool.PLACE_PWTRANSP: return powerTransportTr[2];
+		case Tool.PLACE_PTRANSP: return powerTransportTr[2];
 		case Tool.SELECT: return cursorTr;
 	
 		}
