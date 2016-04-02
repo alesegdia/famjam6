@@ -236,7 +236,10 @@ public class GameplayScreen implements Screen {
 			x = Gdx.input.getX();
 			y = Gdx.input.getY();
 			Vector3 v = g.cam.unproject(new Vector3(x + 18, y - 20, 0));
-			scenario.tryApplyTool(v.x, v.y, this.currentTool);
+			if( !this.isMenuOpened || (this.isMenuOpened && Gdx.input.getX() < 560) )
+			{
+				scenario.tryApplyTool(v.x, v.y, this.currentTool);				
+			}
 		}
 	}
 
