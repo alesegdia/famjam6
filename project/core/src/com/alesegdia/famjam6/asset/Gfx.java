@@ -25,7 +25,7 @@ public class Gfx {
 		froncetiteGathererTr = tileset.get(4);
 		sandetiteGathererTr = tileset.get(8);
 		baseExtensionTr = tileset.get(14);
-		powerPlantTr = tileset.get(18);
+		powerPlantTr = tileset.get(9);
 
 		// transports
 		froncetiteTransportTr = new TextureRegion[3];
@@ -36,8 +36,8 @@ public class Gfx {
 		loadTransport( 2, sandetiteTransportTr );
 		loadTransport( 3, powerTransportTr );
 		
-		froncetiteTerrainTr = tileset.get(0);
-		sandetiteTerrainTr = tileset.get(1);
+		froncetiteTerrainTr = tileset.get(1);
+		sandetiteTerrainTr = tileset.get(0);
 		highTerrainTr = tileset.get(2);
 		lowTerrainTr = tileset.get(3);
 		
