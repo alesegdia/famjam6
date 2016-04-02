@@ -107,35 +107,35 @@ public class GameplayScreen implements Screen {
 			g.batch.setProjectionMatrix(g.textCam.combined);
 			g.batch.begin();
 			int sc = 5;
-			g.batch.draw(Gfx.froncetiteGathererTr, 640, 400, 0, 0, 8, 8, sc, sc, 0);
-			g.batch.draw(Gfx.froncetiteTransportTr[1], 720, 400, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.froncetiteGathererTr, 640, 520, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.froncetiteTransportTr[1], 720, 520, 0, 0, 8, 8, sc, sc, 0);
 
-			g.batch.draw(Gfx.sandetiteGathererTr, 640, 340, 0, 0, 8, 8, sc, sc, 0);
-			g.batch.draw(Gfx.sandetiteTransportTr[1], 720, 340, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.sandetiteGathererTr, 640, 460, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.sandetiteTransportTr[1], 720, 460, 0, 0, 8, 8, sc, sc, 0);
 			
-			g.batch.draw(Gfx.powerPlantTr, 640, 280, 0, 0, 8, 8, sc, sc, 0);
-			g.batch.draw(Gfx.powerTransportTr[1], 720, 280, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.powerPlantTr, 640, 400, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.powerTransportTr[1], 720, 400, 0, 0, 8, 8, sc, sc, 0);
 			
-			g.batch.draw(Gfx.baseExtensionTr, 640, 220, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.baseExtensionTr, 640, 340, 0, 0, 8, 8, sc, sc, 0);
 			
-			g.batch.draw(Gfx.deleteTr, 640, 160, 0, 0, 8, 8, sc, sc, 0);
-			g.batch.draw(Gfx.cursorTr, 720, 160, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.deleteTr, 640, 280, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.cursorTr, 720, 280, 0, 0, 8, 8, sc, sc, 0);
 
 			g.batch.end();
 			
 			int sz = 8*4;
-			if( clickIn(640, 400, sz, sz) ) this.currentTool = Tool.PLACE_FGATHER;
-			if( clickIn(720, 400, sz, sz) ) this.currentTool = Tool.PLACE_FTRANSP;
+			if( clickIn(640, 520, sz, sz) ) this.currentTool = Tool.PLACE_FGATHER;
+			if( clickIn(720, 520, sz, sz) ) this.currentTool = Tool.PLACE_FTRANSP;
 			
-			if( clickIn(640, 340, sz, sz) ) this.currentTool = Tool.PLACE_SGATHER;
-			if( clickIn(720, 340, sz, sz) ) this.currentTool = Tool.PLACE_STRANSP;
+			if( clickIn(640, 460, sz, sz) ) this.currentTool = Tool.PLACE_SGATHER;
+			if( clickIn(720, 460, sz, sz) ) this.currentTool = Tool.PLACE_STRANSP;
 			
-			if( clickIn(640, 280, sz, sz) ) this.currentTool = Tool.PLACE_PWPLANT;
-			if( clickIn(720, 280, sz, sz) ) this.currentTool = Tool.PLACE_PTRANSP;
+			if( clickIn(640, 400, sz, sz) ) this.currentTool = Tool.PLACE_PWPLANT;
+			if( clickIn(720, 400, sz, sz) ) this.currentTool = Tool.PLACE_PTRANSP;
 			
-			if( clickIn(640, 220, sz, sz) ) this.currentTool = Tool.PLACE_BASE;
-			if( clickIn(640, 160, sz, sz) ) this.currentTool = Tool.DESTROY;
-			if( clickIn(720, 160, sz, sz) ) this.currentTool = Tool.SELECT;
+			if( clickIn(640, 340, sz, sz) ) this.currentTool = Tool.PLACE_BASE;
+			if( clickIn(640, 280, sz, sz) ) this.currentTool = Tool.DESTROY;
+			if( clickIn(720, 280, sz, sz) ) this.currentTool = Tool.SELECT;
 		}
 		
 		g.batch.setProjectionMatrix(g.textCam.combined);
