@@ -1,6 +1,8 @@
 package com.alesegdia.famjam6.screen;
 
+import com.alesegdia.famjam6.GameConfig;
 import com.alesegdia.famjam6.GdxGame;
+import com.alesegdia.famjam6.asset.Gfx;
 import com.alesegdia.famjam6.map.DebugTerrainRenderer;
 import com.alesegdia.famjam6.map.NoiseGen;
 import com.alesegdia.famjam6.map.Scenario;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class GameplayScreen implements Screen {
@@ -34,6 +37,8 @@ public class GameplayScreen implements Screen {
 		this.scenario = new Scenario(map, 8);
 		
 	}
+	
+	Vector2 realCamPos = new Vector2(0,0);
 
 	@Override
 	public void render(float delta)
@@ -46,12 +51,6 @@ public class GameplayScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		g.srend.setProjectionMatrix(g.cam.combined);
-		g.srend.setAutoShapeType(true);
-		g.srend.begin();
-		g.srend.set(ShapeType.Filled);
-		this.debugMapRenderer.render(g.srend);
-		g.srend.end();
 
         g.cam.update();
         g.batch.setProjectionMatrix(g.cam.combined);
@@ -60,12 +59,27 @@ public class GameplayScreen implements Screen {
 		g.batch.end();
 		
 		g.textCam.update();
+		g.srend.setProjectionMatrix(g.textCam.combined);
+		g.srend.setAutoShapeType(true);
+		g.srend.begin();
+		g.srend.set(ShapeType.Filled);
+		//this.debugMapRenderer.render(g.srend);
+		g.srend.setAutoShapeType(true);
+		g.srend.set(ShapeType.Filled);
+		g.srend.setColor(0.5f, 0f, 0f, 1f);
+		g.srend.rect(0, 0, 800, 50);
+		g.srend.setColor(0.3f, 0.f, 0.f, 1f);
+		g.srend.rect(0, 0, 800, 45);
+		g.srend.end();
+		
 		g.batch.setProjectionMatrix(g.textCam.combined);
 		g.batch.begin();
 		g.font.draw(g.batch, Tool.getToolString(this.currentTool), 10, 25);
 		//g.font.draw(g.batch, gac.gauge(), 50, 30);
 		g.batch.end();
 		
+
+
 		g.batch.setProjectionMatrix(g.menuCam.combined);
 		g.batch.begin();
 		//g.batch.draw(Gfx.pickupsSheet.get(9), 1, 1);
@@ -79,13 +93,20 @@ public class GameplayScreen implements Screen {
 		
 		if( Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ) speed = 1.f;
 		
-		if( Gdx.input.isKeyPressed(Input.Keys.A) ) g.cam.position.x -= speed;
-		if( Gdx.input.isKeyPressed(Input.Keys.D) ) g.cam.position.x += speed;
-		if( Gdx.input.isKeyPressed(Input.Keys.W) ) g.cam.position.y += speed;
-		if( Gdx.input.isKeyPressed(Input.Keys.S) ) g.cam.position.y -= speed;
+		if( Gdx.input.isKeyPressed(Input.Keys.A) ) realCamPos.x -= speed;
+		if( Gdx.input.isKeyPressed(Input.Keys.D) ) realCamPos.x += speed;
+		if( Gdx.input.isKeyPressed(Input.Keys.W) ) realCamPos.y += speed;
+		if( Gdx.input.isKeyPressed(Input.Keys.S) ) realCamPos.y -= speed;
 
-		if( g.cam.position.x < 0 ) g.cam.position.x = 0 ;
-		if( g.cam.position.y < 0 ) g.cam.position.y = 0 ;
+		if( realCamPos.x < 0 ) realCamPos.x = 0 ;
+		if( realCamPos.y < 0 ) realCamPos.y = 0 ;
+		
+		float k = 1;
+		g.cam.position.x = Math.round(realCamPos.x * k) / k;
+		g.cam.position.y = Math.round(realCamPos.y * k) / k;
+		
+		g.cam.position.x = realCamPos.x;
+		g.cam.position.y = realCamPos.y;
 		
 		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) ) this.currentTool = Tool.PLACE_FGATHER;
 		if( Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) ) this.currentTool = Tool.PLACE_SGATHER;
