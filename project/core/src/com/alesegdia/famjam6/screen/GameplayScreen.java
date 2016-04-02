@@ -3,6 +3,7 @@ package com.alesegdia.famjam6.screen;
 import com.alesegdia.famjam6.GameConfig;
 import com.alesegdia.famjam6.GdxGame;
 import com.alesegdia.famjam6.asset.Gfx;
+import com.alesegdia.famjam6.entity.PlayerStatus;
 import com.alesegdia.famjam6.map.DebugTerrainRenderer;
 import com.alesegdia.famjam6.map.NoiseGen;
 import com.alesegdia.famjam6.map.Scenario;
@@ -21,6 +22,7 @@ public class GameplayScreen implements Screen {
 	private float[][] map;
 	private DebugTerrainRenderer debugMapRenderer;
 	private Scenario scenario;
+	private PlayerStatus playerStatus = new PlayerStatus();
 	
 	private int currentTool = 0;
 	
@@ -36,7 +38,7 @@ public class GameplayScreen implements Screen {
 
 		this.map = NoiseGen.GeneratePerlinNoise(100, 100, 4);
 		this.debugMapRenderer = new DebugTerrainRenderer(this.map, 8);
-		this.scenario = new Scenario(map, 8);
+		this.scenario = new Scenario(map, 8, playerStatus);
 		
 	}
 	
@@ -49,7 +51,9 @@ public class GameplayScreen implements Screen {
 		handlePlayerInput();
 		
 		//gw.setCam();
-        
+
+		scenario.update();
+		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -117,12 +121,6 @@ public class GameplayScreen implements Screen {
 			g.batch.draw(Gfx.deleteTr, 640, 160, 0, 0, 8, 8, sc, sc, 0);
 			g.batch.draw(Gfx.cursorTr, 720, 160, 0, 0, 8, 8, sc, sc, 0);
 
-			g.batch.draw(Gfx.froncetiteTerrainTr, 640, 70, 0, 0, 8, 8, sc, sc, 0);
-			g.font.draw(g.batch, "x100", 700, 100);
-
-			g.batch.draw(Gfx.sandetiteTerrainTr, 640, 10, 0, 0, 8, 8, sc, sc, 0);
-			g.font.draw(g.batch, "x100", 700, 40);
-
 			g.batch.end();
 			
 			int sz = 8*4;
@@ -140,6 +138,20 @@ public class GameplayScreen implements Screen {
 			if( clickIn(720, 160, sz, sz) ) this.currentTool = Tool.SELECT;
 		}
 		
+		g.batch.setProjectionMatrix(g.textCam.combined);
+		g.batch.begin();
+		int sc = 5;
+
+		g.batch.draw(Gfx.powerTr, 10, 550, 0, 0, 8, 8, sc, sc, 0);
+		g.font.draw(g.batch, "" + Math.round(playerStatus.getPowerPercent()) + "%", 60, 580);
+
+		g.batch.draw(Gfx.froncetiteSymTr, 10, 510, 0, 0, 8, 8, sc, sc, 0);
+		g.font.draw(g.batch, "" + Math.round(playerStatus.froncetite), 60, 540);
+
+		g.batch.draw(Gfx.sandetiteSymTr, 10, 470, 0, 0, 8, 8, sc, sc, 0);
+		g.font.draw(g.batch, "" + Math.round(playerStatus.sandetite), 60, 500);
+		g.batch.end();
+
 		Vector3 v = g.cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 		g.batch.setProjectionMatrix(g.cam.combined);
 		g.batch.begin();
@@ -172,7 +184,7 @@ public class GameplayScreen implements Screen {
 		Gdx.input.setCursorPosition(fcx, fcy);
 
 		
-		float speed = 0.5f;
+		float speed = 1f;//0.5f;
 		float scrollThreshold = 100;
 		
 		if( Gdx.input.isKeyJustPressed(Input.Keys.TAB) )
@@ -190,6 +202,7 @@ public class GameplayScreen implements Screen {
 			if( Gdx.input.getY() > GameConfig.WINDOW_HEIGHT - scrollThreshold) realCamPos.y -= speed;
 		}
 		
+		System.out.println(playerStatus.froncetite);
 		float l = GameConfig.VIEWPORT_WIDTH / 2f;
 		float b = GameConfig.VIEWPORT_HEIGHT / 2f;
 		float r = this.scenario.widthInTiles() * 8f - GameConfig.VIEWPORT_WIDTH / 2f;

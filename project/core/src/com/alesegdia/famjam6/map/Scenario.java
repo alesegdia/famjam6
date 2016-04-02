@@ -10,6 +10,7 @@ import com.alesegdia.famjam6.entity.Building;
 import com.alesegdia.famjam6.entity.FroncetiteGatherer;
 import com.alesegdia.famjam6.entity.FroncetiteTransport;
 import com.alesegdia.famjam6.entity.Gatherer;
+import com.alesegdia.famjam6.entity.PlayerStatus;
 import com.alesegdia.famjam6.entity.PowerPlant;
 import com.alesegdia.famjam6.entity.PowerTransport;
 import com.alesegdia.famjam6.entity.SandetiteGatherer;
@@ -30,6 +31,8 @@ public class Scenario {
 	private Building[][] fGatherMap;
 	private Building[][] pGatherMap;
 	
+	private PlayerStatus playerStatus;
+	
 	private List<Building> buildingsList = new LinkedList<Building>();
 	private List<Gatherer> gathererList = new LinkedList<Gatherer>();
 
@@ -38,8 +41,9 @@ public class Scenario {
 	private TileTerrainRenderer terrainRenderer;
 	private Building[][] baseMap;
 	
-	public Scenario( float[][] terrainMap, float scale )
+	public Scenario( float[][] terrainMap, float scale, PlayerStatus status )
 	{
+		this.playerStatus = status;
 		this.scale = scale;
 		this.terrainMap = terrainMap;
 		
@@ -102,8 +106,26 @@ public class Scenario {
 					drawUnconnected(batch, i, j, this.fGatherMap);
 					drawUnconnected(batch, i, j, this.pGatherMap);
 					drawUnconnected(batch, i, j, this.sGatherMap);
+					
+					if( this.playerStatus.power <= 0 )
+					{
+						batch.draw(Gfx.noPowerTr, i * this.scale, j * this.scale);
+					}
 				}
 			}
+		}
+	}
+	
+	public void update()
+	{
+		for( Building b : this.buildingsList )
+		{
+			b.update(playerStatus);
+		}
+		
+		if( this.playerStatus.power < 0 )
+		{
+			this.playerStatus.power = 0;
 		}
 	}
 	
@@ -375,12 +397,13 @@ public class Scenario {
 	}
 
 	private void notifyBuildingRemoved(int scx, int scy, Building b) {
+		b.destroyed(playerStatus);
 		checkAllGatherersConnectivity();
 		System.out.println("==================");
 	}
 
 	private void notifyBuildingAdded(int scx, int scy, Building b) {
-		// check all gatherers
+		b.built(playerStatus);
 		checkAllGatherersConnectivity();
 		System.out.println("==================");
 	}
