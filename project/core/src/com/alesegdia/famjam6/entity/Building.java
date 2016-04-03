@@ -29,12 +29,6 @@ public class Building {
 		this.energyConsupmtionRate = ecr;
 	}
 	
-	public final void built( PlayerStatus stats )
-	{
-		stats.froncetite -= baseFroncetiteCost;
-		stats.sandetite -= baseSandetiteCost;
-	}
-	
 	public void update( PlayerStatus stats )
 	{
 		stats.power -= this.energyConsupmtionRate * Gdx.graphics.getDeltaTime();
