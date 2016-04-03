@@ -141,6 +141,28 @@ public class Scenario {
 		}
 	}
 	
+	public int getTerrainType( int scx, int scy )
+	{
+		
+		if( scx >= 0 && scx < this.buildingsMap.length && scy >= 0 && scy < this.buildingsMap[0].length  )
+		{
+			float v = this.terrainMap[scx][scy];
+			if( v < 0.2 )
+			{
+				return -1;
+			}
+			else if( v > 0.8 )
+			{
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		return 0;
+	}
+	
 	public boolean tryApplyTool( float x, float y, int currentTool )
 	{
 		boolean okop = false;
@@ -357,6 +379,18 @@ public class Scenario {
 						okop = true;
 						this.notifyBuildingRemoved( scx, scy, b );
 
+					}
+				}
+				
+				if( currentTool == Tool.DURIRO )
+				{
+					if( this.getTerrainType(scx, scy) == -1 )
+					{
+						this.playerStatus.froncetite += 1 * this.playerStatus.dmult;
+					}
+					else if( this.getTerrainType(scx, scy) == 1 )
+					{
+						this.playerStatus.sandetite += 1 * this.playerStatus.dmult;
 					}
 				}
 			}
