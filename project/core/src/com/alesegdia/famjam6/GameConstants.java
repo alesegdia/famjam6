@@ -5,8 +5,8 @@ public class GameConstants {
 	public static final float DESTROY_REWARD_RATE = 0.25f;
 	
 	// froncetite gatherer ********************************
-	public static final float FG_F_COST = 0;
-	public static final float FG_S_COST = 0;
+	public static final float FG_F_COST = 5;
+	public static final float FG_S_COST = 5;
 	public static final float FG_PRODUCTION_RATE = 0.5f;
 	public static final float FG_POWER_CONSUMPTION_RATE = 3;
 
@@ -15,8 +15,8 @@ public class GameConstants {
 	public static final float FT_F_COST = 2;
 
 	// sandetite gatherer *********************************
-	public static final float SG_F_COST = 0;
-	public static final float SG_S_COST = 0;
+	public static final float SG_F_COST = 5;
+	public static final float SG_S_COST = 5;
 	public static final float SG_PRODUCTION_RATE = 0.5f;
 	public static final float SG_POWER_CONSUMPTION_RATE = 3;
 
