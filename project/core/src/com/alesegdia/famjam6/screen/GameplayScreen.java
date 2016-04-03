@@ -1,9 +1,13 @@
 package com.alesegdia.famjam6.screen;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.alesegdia.famjam6.GameConfig;
 import com.alesegdia.famjam6.GdxGame;
 import com.alesegdia.famjam6.asset.Gfx;
 import com.alesegdia.famjam6.entity.PlayerStatus;
+import com.alesegdia.famjam6.entity.Upgrade;
 import com.alesegdia.famjam6.map.DebugTerrainRenderer;
 import com.alesegdia.famjam6.map.NoiseGen;
 import com.alesegdia.famjam6.map.Scenario;
@@ -36,13 +40,28 @@ public class GameplayScreen implements Screen {
 	@Override
 	public void show() {
 
+		this.playerStatus = new PlayerStatus();
+
 		this.map = NoiseGen.GeneratePerlinNoise(100, 100, 4);
 		this.debugMapRenderer = new DebugTerrainRenderer(this.map, 8);
 		this.scenario = new Scenario(map, 8, playerStatus);
+		this.upgrades = new LinkedList<Upgrade>();
+		realCamPos = new Vector2(0,0);
 		
+		upgrades.add(Upgrade.makeFroncetiteEfficiencyUpgrade(0.5f, 10, 10));
+		upgrades.add(Upgrade.makeDrillEfficiencyUpgrade(2, 5, 5));
+		upgrades.add(Upgrade.makePowerEfficiencyUpgrade(2, 100, 100));
+		upgrades.add(Upgrade.makeFroncetiteEfficiencyUpgrade(0.5f, 10, 10));
+		upgrades.add(Upgrade.makeDrillEfficiencyUpgrade(2, 5, 5));
+		upgrades.add(Upgrade.makeSandetiteEfficiencyUpgrade(0.5f, 10, 10));
+		upgrades.add(Upgrade.makePowerEfficiencyUpgrade(0.5f, 10, 10));
 	}
 	
 	Vector2 realCamPos = new Vector2(0,0);
+	private List<Upgrade> upgrades;
+	
+	float cantAffordTimer = 0f;
+	Upgrade cantAffordUpgrade;
 
 	@Override
 	public void render(float delta)
@@ -77,10 +96,49 @@ public class GameplayScreen implements Screen {
 		g.srend.setColor(0.2f, 0.2f, 0.3f, 1f);
 		g.srend.rect(0, 0, 800, 45);
 		g.srend.end();
-		
+
+		if( this.cantAffordTimer > 0 )
+		{
+			int sc = 5;
+
+			g.textCam.update();
+			g.srend.setProjectionMatrix(g.textCam.combined);
+			g.srend.setAutoShapeType(true);
+			g.srend.begin();
+			g.srend.set(ShapeType.Filled);
+			g.srend.setColor(0,0,0,1);
+			g.srend.rect(20, 70, 300, 140);
+			g.srend.end();
+			
+			this.cantAffordTimer -= Gdx.graphics.getDeltaTime();
+
+			g.batch.setProjectionMatrix(g.textCam.combined);
+			g.batch.begin();
+
+			g.batch.draw(Gfx.froncetiteSymTr, 30, 120, 0, 0, 8, 8, sc, sc, 0);
+			
+			g.font.draw(g.batch, this.cantAffordUpgrade.description, 90, 190);
+			g.batch.draw(this.cantAffordUpgrade.icon, 30, 160, 0, 0, 8, 8, sc, sc, 0);
+
+			
+			if( !this.cantAffordUpgrade.canBuy(playerStatus) )
+			{
+				g.font.setColor(1,0,0,1);
+			}
+			g.font.draw(g.batch, "-" + Math.round(this.cantAffordUpgrade.fCost), 80, 150);
+			g.batch.draw(Gfx.sandetiteSymTr, 30, 80, 0, 0, 8, 8, sc, sc, 0);
+
+			g.font.draw(g.batch, "-" + Math.round(this.cantAffordUpgrade.sCost), 80, 110);
+			g.batch.setColor(1,1,1,1);
+
+			g.font.setColor(1,1,1,1);
+			g.batch.end();
+
+		}
+
 		g.batch.setProjectionMatrix(g.textCam.combined);
 		g.batch.begin();
-		g.font.draw(g.batch, Tool.getToolString(this.currentTool), 10, 25);
+		g.font.draw(g.batch, Tool.getToolString(this.currentTool), 10, 25);			
 		g.batch.end();
 		
 		g.batch.setProjectionMatrix(g.textCam.combined);
@@ -103,13 +161,48 @@ public class GameplayScreen implements Screen {
 			g.srend.setColor(0.2f, 0.2f, 0.3f, 1f);
 			g.srend.rect(605, 0, 200, 600);
 			
+			// upgrade box
 			g.srend.setColor(0,0,0,1);
 			g.srend.rect(620, 20, 160, 240);
+			
 			g.srend.end();
 
 			g.batch.setProjectionMatrix(g.textCam.combined);
 			g.batch.begin();
+
 			int sc = 5;
+			int sz = 8*4;
+
+			Upgrade toRemove = null;
+			for( int i = 0; i < Math.min(upgrades.size(), 5); i++ )
+			{
+				Upgrade u = upgrades.get(i);
+				g.batch.draw(u.icon, 630, 30 + 46 * i, 0, 0, 8, 8, sc, sc, 0);
+				g.font.draw(g.batch, u.text, 680, 54 + 46 * i);
+				
+				if( this.mouseIn(630, 30 + 46 * i, sz, sz) )
+				{
+					this.showCantAffordMessage(u);
+				}
+				if( toRemove == null && clickIn( 630, 30 + 46 * i, sz, sz) )
+				{
+					toRemove = u;
+				}
+			}
+			
+			if( toRemove != null )
+			{
+				if( toRemove.canBuy(playerStatus) )
+				{
+					toRemove.apply(this.playerStatus);
+					this.upgrades.remove((Object)toRemove);
+				}
+				else
+				{
+					showCantAffordMessage(toRemove);
+				}
+			}
+
 			g.batch.draw(Gfx.froncetiteGathererTr, 640, 520, 0, 0, 8, 8, sc, sc, 0);
 			g.batch.draw(Gfx.froncetiteTransportTr[1], 720, 520, 0, 0, 8, 8, sc, sc, 0);
 
@@ -163,11 +256,21 @@ public class GameplayScreen implements Screen {
 
 	}
 
+	private void showCantAffordMessage(Upgrade toRemove) {
+		this.cantAffordTimer = 3f;
+		this.cantAffordUpgrade = toRemove;
+	}
+
 	private boolean clickIn(int x, int y, int w, int h) {
+		return mouseIn( x, y, w, h ) && Gdx.input.isButtonPressed(Input.Buttons.LEFT) && Gdx.input.justTouched();
+	}
+	
+	private boolean mouseIn( int x, int y, int w, int h )
+	{
 		int mx, my;
 		mx = Gdx.input.getX();
 		my = GameConfig.WINDOW_HEIGHT - Gdx.input.getY();
-		return  Gdx.input.isButtonPressed(Input.Buttons.LEFT) &&
+		return  
 				mx > x - w/2 && mx < x + w - w/2 &&
 				my > y - h/2 && my < y + h - h/2;
 	}
