@@ -18,9 +18,6 @@ public class Building {
 	// base sandetite cost to build
 	public float baseSandetiteCost = 0f;
 	
-	// level of upgrade
-	public int upgradeLevel = 0;
-
 	public void setPosition(int scx, int scy) {
 		position.set(scx, scy);
 	}
@@ -49,9 +46,27 @@ public class Building {
 		stats.sandetite += baseSandetiteCost * GameConstants.DESTROY_REWARD_RATE;
 	}
 	
+	public final void applyCost( PlayerStatus stats )
+	{
+		stats.froncetite -= this.getFroncetiteCost(stats);
+		stats.sandetite -= this.getSandetiteCost(stats);
+	}
+	public float getFroncetiteCost(PlayerStatus stats)
+	{
+		return this.baseFroncetiteCost * stats.fmult;
+	}
+	
+	public float getSandetiteCost(PlayerStatus stats)
+	{
+		return this.baseSandetiteCost * stats.fmult;
+	}
+	
 	public boolean canBuy( PlayerStatus stats )
 	{
-		return stats.froncetite - this.baseFroncetiteCost >= 0 && stats.sandetite - this.baseSandetiteCost >= 0;
+		float rfcost, rscost;
+		rfcost = this.baseFroncetiteCost * stats.fmult;
+		rscost = this.baseSandetiteCost * stats.smult;
+		return stats.froncetite - rfcost >= 0 && stats.sandetite - rscost >= 0;
 	}
 	
 }

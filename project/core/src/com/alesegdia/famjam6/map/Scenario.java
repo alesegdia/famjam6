@@ -16,6 +16,8 @@ import com.alesegdia.famjam6.entity.PowerTransport;
 import com.alesegdia.famjam6.entity.SandetiteGatherer;
 import com.alesegdia.famjam6.entity.SandetiteTransport;
 import com.alesegdia.famjam6.entity.Transport;
+import com.alesegdia.famjam6.util.RNG;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -127,8 +129,26 @@ public class Scenario {
 		{
 			this.playerStatus.power = 0;
 		}
+		
+		if( this.playerStatus.getPowerPercent() > 200 )
+		{
+			if( RNG.rng.nextFloat() < 0.01 )
+			{
+				this.destroyRandomBuilding();
+			}
+		}
 	}
 	
+	private void destroyRandomBuilding() {
+		if( !this.buildingsList.isEmpty() )
+		{
+			int r = RNG.rng.nextInt(this.buildingsList.size());
+			Building b = this.buildingsList.get(r);
+			this.tryApplyTool_((int)b.position.x, (int)b.position.y, Tool.DESTROY);
+			this.checkAllGatherersConnectivity();
+		}
+	}
+
 	public void drawUnconnected( SpriteBatch batch, int i, int j, Building[][] map )
 	{
 		if( map[i][j] != null )
@@ -165,10 +185,16 @@ public class Scenario {
 	
 	public boolean tryApplyTool( float x, float y, int currentTool )
 	{
-		boolean okop = false;
 		int scx = scaleCoord(x);
 		int scy = scaleCoord(y);
 		
+		return tryApplyTool_(scx, scy, currentTool);
+	}
+	
+	private boolean tryApplyTool_(int scx, int scy, int currentTool )
+	{
+		boolean okop = false;
+
 		if( scx >= 0 && scx < this.buildingsMap.length && scy >= 0 && scy < this.buildingsMap[0].length  )
 		{
 			if( Tool.isPlacementTool(currentTool) )
@@ -271,7 +297,7 @@ public class Scenario {
 							}
 						}
 						
-						if( canPlace )
+						if( canPlace && b.canBuy(playerStatus) )
 						{
 							if( b instanceof SandetiteTransport )
 							{
@@ -319,6 +345,7 @@ public class Scenario {
 							{
 								this.gathererList.add((Gatherer)b);
 							}
+							
 							notifyBuildingAdded( scx, scy, b );
 							okop = true;					
 						}
@@ -441,7 +468,7 @@ public class Scenario {
 	}
 
 	private void notifyBuildingAdded(int scx, int scy, Building b) {
-		b.built(playerStatus);
+		b.applyCost(playerStatus);
 		checkAllGatherersConnectivity();
 		System.out.println("==================");
 	}
