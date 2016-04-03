@@ -32,6 +32,9 @@ public class GameplayScreen implements Screen {
 	private int currentTool = 0;
 	
 	boolean isMenuOpened = false;
+	
+	float nextPercentUpdateTimer = 0f;
+	int lastPercentTaken = 0;
 
 	public GameplayScreen( GdxGame g )
 	{
@@ -165,7 +168,7 @@ public class GameplayScreen implements Screen {
 			g.srend.begin();
 			g.srend.set(ShapeType.Filled);
 			g.srend.setColor(0,0,0,1);
-			g.srend.rect(20, 70, 300, 140);
+			g.srend.rect(20, 70, 410, 140);
 			g.srend.end();
 			
 			this.cantAffordTimer -= Gdx.graphics.getDeltaTime();
@@ -298,8 +301,21 @@ public class GameplayScreen implements Screen {
 		int sc = 5;
 
 		g.batch.draw(Gfx.powerTr, 10, 550, 0, 0, 8, 8, sc, sc, 0);
-		g.font.draw(g.batch, "" + Math.floor(playerStatus.getPowerPercent()) + "%", 60, 580);
-
+		if( this.nextPercentUpdateTimer < 0 )
+		{
+			this.lastPercentTaken = playerStatus.getPowerPercent();
+			this.nextPercentUpdateTimer = 0.5f;
+		}
+		this.nextPercentUpdateTimer -= Gdx.graphics.getDeltaTime();
+		
+		if( this.lastPercentTaken > 200 )
+		{
+			g.font.setColor(1,0,0,1);
+		}
+		int pp = this.lastPercentTaken;
+		g.font.draw(g.batch, "" + pp + "%", 60, 580);
+		g.font.setColor(1,1,1,1);
+		
 		g.batch.draw(Gfx.froncetiteSymTr, 10, 510, 0, 0, 8, 8, sc, sc, 0);
 		g.font.draw(g.batch, "" + Math.round(playerStatus.froncetite), 60, 540);
 
@@ -323,7 +339,7 @@ public class GameplayScreen implements Screen {
 	}
 
 	private void showCantAffordMessage(Upgrade toRemove) {
-		this.cantAffordTimer = 3f;
+		this.cantAffordTimer = 0.5f;
 		this.cantAffordUpgrade = toRemove;
 	}
 
@@ -337,7 +353,7 @@ public class GameplayScreen implements Screen {
 		mx = Gdx.input.getX();
 		my = GameConfig.WINDOW_HEIGHT - Gdx.input.getY();
 		return  
-				mx > x - w/2 && mx < x + w - w/2 &&
+				mx > x - w/4 && mx < x + w - w/4 &&
 				my > y - h/2 && my < y + h - h/2;
 	}
 
@@ -362,6 +378,11 @@ public class GameplayScreen implements Screen {
 		if( Gdx.input.isKeyJustPressed(Input.Keys.TAB) )
 		{
 			this.isMenuOpened = !this.isMenuOpened;
+		}
+		
+		if( Gdx.input.isKeyJustPressed(Input.Keys.F12) )
+		{
+			playerStatus.godMode = !playerStatus.godMode;
 		}
 		
 		if( Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ) speed = 1.f;
@@ -403,7 +424,15 @@ public class GameplayScreen implements Screen {
 			float x, y;
 			x = Gdx.input.getX();
 			y = Gdx.input.getY();
-			Vector3 v = g.cam.unproject(new Vector3(x + 18, y - 20, 0));
+			Vector3 v;
+			if( this.currentTool == Tool.DURIRO )
+			{
+				v = g.cam.unproject(new Vector3(x, y - 32, 0));
+			}
+			else
+			{
+				v = g.cam.unproject(new Vector3(x + 18, y - 20, 0));
+			}
 			if( !this.isMenuOpened || (this.isMenuOpened && Gdx.input.getX() < 560) )
 			{
 				scenario.tryApplyTool(v.x, v.y, this.currentTool);				
