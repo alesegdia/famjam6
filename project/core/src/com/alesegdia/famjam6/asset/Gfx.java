@@ -27,6 +27,7 @@ public class Gfx {
 	
 	public static TextureRegion froncetiteSymTr;
 	public static TextureRegion sandetiteSymTr;
+	public static TextureRegion duriroTr;
 
 	public static void Initialize()
 	{
@@ -58,6 +59,7 @@ public class Gfx {
 		
 		sandetiteSymTr = tileset.get(23);
 		froncetiteSymTr = tileset.get(22);
+		duriroTr = tileset.get(24);
 		
 	}
 
@@ -81,6 +83,7 @@ public class Gfx {
 		case Tool.PLACE_STRANSP: return sandetiteTransportTr[2];
 		case Tool.PLACE_PWPLANT: return powerPlantTr;
 		case Tool.PLACE_PTRANSP: return powerTransportTr[2];
+		case Tool.DURIRO: return duriroTr;
 		case Tool.SELECT: return cursorTr;
 	
 		}
