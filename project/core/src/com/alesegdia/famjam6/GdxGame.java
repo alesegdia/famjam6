@@ -1,6 +1,7 @@
 package com.alesegdia.famjam6;
 
 import com.alesegdia.famjam6.asset.Gfx;
+import com.alesegdia.famjam6.asset.Sfx;
 import com.alesegdia.famjam6.screen.GameplayScreen;
 import com.alesegdia.famjam6.screen.InstructionsScreen;
 import com.alesegdia.famjam6.screen.SplashScreen;
@@ -92,6 +93,8 @@ public class GdxGame extends Game {
         setScreen(splashScreen);
 
 		generator.dispose();
+		
+		Sfx.Initialize();
 		
 	}
 
