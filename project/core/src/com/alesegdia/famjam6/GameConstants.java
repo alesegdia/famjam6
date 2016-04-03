@@ -27,7 +27,7 @@ public class GameConstants {
 	// power plant ****************************************
 	public static final float PG_F_COST = 10;
 	public static final float PG_S_COST = 10;
-	public static final float PG_PRODUCTION_RATE = 8000f;
+	public static final float PG_PRODUCTION_RATE = 2000f;
 	public static final float PG_POWER_CONSUMPTION_RATE = 0f;
 
 	// power transport
