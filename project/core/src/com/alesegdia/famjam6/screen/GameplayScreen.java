@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.alesegdia.famjam6.GameConfig;
+import com.alesegdia.famjam6.GameConstants;
 import com.alesegdia.famjam6.GdxGame;
 import com.alesegdia.famjam6.asset.Gfx;
 import com.alesegdia.famjam6.entity.PlayerStatus;
@@ -37,6 +38,58 @@ public class GameplayScreen implements Screen {
 		this.g = g;
 	}
 	
+	Upgrade helperUpgrade = new Upgrade();
+	
+	void setHelperUpgrade( int tool )
+	{
+		switch(tool)
+		{
+		case Tool.PLACE_BASE:
+			helperUpgrade.description = "place base";
+			helperUpgrade.fCost = GameConstants.BASE_F_COST * playerStatus.fmult;
+			helperUpgrade.sCost = GameConstants.BASE_S_COST * playerStatus.smult;
+			helperUpgrade.icon = Gfx.baseExtensionTr;
+			break;
+		case Tool.PLACE_FGATHER:
+			helperUpgrade.description = "place f. gatherer";
+			helperUpgrade.fCost = GameConstants.FG_F_COST * playerStatus.fmult;
+			helperUpgrade.sCost = GameConstants.FG_S_COST * playerStatus.smult;
+			helperUpgrade.icon = Gfx.froncetiteGathererTr;
+			break;
+		case Tool.PLACE_FTRANSP:
+			helperUpgrade.description = "place f. transport";
+			helperUpgrade.fCost = GameConstants.FT_F_COST * playerStatus.fmult;
+			helperUpgrade.sCost = GameConstants.FT_S_COST * playerStatus.smult;
+			helperUpgrade.icon = Gfx.froncetiteTransportTr[2];
+			break;
+		case Tool.PLACE_SGATHER:
+			helperUpgrade.description = "place s. gatherer";
+			helperUpgrade.fCost = GameConstants.SG_F_COST * playerStatus.fmult;
+			helperUpgrade.sCost = GameConstants.SG_S_COST * playerStatus.smult;
+			helperUpgrade.icon = Gfx.sandetiteGathererTr;
+			break;
+		case Tool.PLACE_STRANSP:
+			helperUpgrade.description = "place s. transport";
+			helperUpgrade.fCost = GameConstants.ST_F_COST * playerStatus.fmult;
+			helperUpgrade.sCost = GameConstants.ST_S_COST * playerStatus.smult;
+			helperUpgrade.icon = Gfx.sandetiteTransportTr[2];
+			break;
+		case Tool.PLACE_PWPLANT:
+			helperUpgrade.description = "place p. plant";
+			helperUpgrade.fCost = GameConstants.PG_F_COST * playerStatus.fmult;
+			helperUpgrade.sCost = GameConstants.PG_S_COST * playerStatus.smult;
+			helperUpgrade.icon = Gfx.powerPlantTr;
+			break;
+		case Tool.PLACE_PTRANSP:
+			helperUpgrade.description = "place p. transport";
+			helperUpgrade.fCost = GameConstants.PT_F_COST * playerStatus.fmult;
+			helperUpgrade.sCost = GameConstants.PT_S_COST * playerStatus.smult;
+			helperUpgrade.icon = Gfx.powerTransportTr[2];
+			break;
+		}
+		this.showCantAffordMessage(helperUpgrade);
+	}
+	
 	@Override
 	public void show() {
 
@@ -47,14 +100,20 @@ public class GameplayScreen implements Screen {
 		this.scenario = new Scenario(map, 8, playerStatus);
 		this.upgrades = new LinkedList<Upgrade>();
 		realCamPos = new Vector2(0,0);
+
+		float base_s = 0.1f;
+		float base_f = 0.1f;
+		float base_p = 0.2f;
+		float base_d = 0.3f;
 		
-		upgrades.add(Upgrade.makeFroncetiteEfficiencyUpgrade(0.5f, 10, 10));
-		upgrades.add(Upgrade.makeDrillEfficiencyUpgrade(2, 5, 5));
-		upgrades.add(Upgrade.makePowerEfficiencyUpgrade(2, 100, 100));
-		upgrades.add(Upgrade.makeFroncetiteEfficiencyUpgrade(0.5f, 10, 10));
-		upgrades.add(Upgrade.makeDrillEfficiencyUpgrade(2, 5, 5));
-		upgrades.add(Upgrade.makeSandetiteEfficiencyUpgrade(0.5f, 10, 10));
-		upgrades.add(Upgrade.makePowerEfficiencyUpgrade(0.5f, 10, 10));
+		for( int i = 0; i < 10; i++ )
+		{
+			float exp = (float) Math.pow(10, i);
+			upgrades.add(Upgrade.makeFroncetiteEfficiencyUpgrade(base_f * exp, 20 * exp, 10 * exp));
+			upgrades.add(Upgrade.makeSandetiteEfficiencyUpgrade(base_s * exp, 10 * exp, 20 * exp));
+			upgrades.add(Upgrade.makePowerEfficiencyUpgrade(base_p * exp, 15 * exp, 15 * exp));
+			upgrades.add(Upgrade.makeDrillEfficiencyUpgrade(base_d * exp, 20 * exp, 20 * exp));
+		}		
 	}
 	
 	Vector2 realCamPos = new Vector2(0,0);
@@ -215,24 +274,23 @@ public class GameplayScreen implements Screen {
 			g.batch.draw(Gfx.duriroTr, 720, 340, 0, 0, 8, 8, sc, sc, 0);
 			
 			g.batch.draw(Gfx.deleteTr, 640, 280, 0, 0, 8, 8, sc, sc, 0);
-			g.batch.draw(Gfx.cursorTr, 720, 280, 0, 0, 8, 8, sc, sc, 0);
 
 			g.batch.end();
 			
-			if( clickIn(640, 520, sz, sz) ) this.currentTool = Tool.PLACE_FGATHER;
-			if( clickIn(720, 520, sz, sz) ) this.currentTool = Tool.PLACE_FTRANSP;
+			toolMenuItemHelper(Tool.PLACE_FGATHER, 640, 520, sz);
+			toolMenuItemHelper(Tool.PLACE_FTRANSP, 720, 520, sz);
 			
-			if( clickIn(640, 460, sz, sz) ) this.currentTool = Tool.PLACE_SGATHER;
-			if( clickIn(720, 460, sz, sz) ) this.currentTool = Tool.PLACE_STRANSP;
+			toolMenuItemHelper(Tool.PLACE_SGATHER, 640, 460, sz);
+			toolMenuItemHelper(Tool.PLACE_STRANSP, 720, 460, sz);
+
+			toolMenuItemHelper(Tool.PLACE_PWPLANT, 640, 400, sz);
+			toolMenuItemHelper(Tool.PLACE_PTRANSP, 720, 400, sz);
 			
-			if( clickIn(640, 400, sz, sz) ) this.currentTool = Tool.PLACE_PWPLANT;
-			if( clickIn(720, 400, sz, sz) ) this.currentTool = Tool.PLACE_PTRANSP;
+			toolMenuItemHelper(Tool.PLACE_BASE, 640, 340, sz);
 			
-			if( clickIn(640, 340, sz, sz) ) this.currentTool = Tool.PLACE_BASE;
 			if( clickIn(720, 340, sz, sz) ) this.currentTool = Tool.DURIRO;
 
 			if( clickIn(640, 280, sz, sz) ) this.currentTool = Tool.DESTROY;
-			if( clickIn(720, 280, sz, sz) ) this.currentTool = Tool.SELECT;
 		}
 		
 		g.batch.setProjectionMatrix(g.textCam.combined);
@@ -254,6 +312,13 @@ public class GameplayScreen implements Screen {
 		g.batch.begin();
 		g.batch.draw(Gfx.getToolCursor(this.currentTool), Math.round(v.x), Math.round(v.y));
 		g.batch.end();
+
+	}
+	
+	void toolMenuItemHelper(int tool, int x, int y, int sz)
+	{
+		if( mouseIn(x, y, sz, sz) ) this.setHelperUpgrade(tool);
+		if( clickIn(x, y, sz, sz) ) this.currentTool = tool;
 
 	}
 
