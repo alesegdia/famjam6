@@ -15,7 +15,7 @@ public class Gatherer extends Building {
 	{
 		super.update(playerStats);
 		
-		if( (connectedToBase && playerStats.power > 0) || this instanceof PowerPlant )
+		if( (connectedToBase && playerStats.power > 0) || (connectedToBase && this instanceof PowerPlant) )
 		{
 			playerStats.froncetite += this.froncetiteProductionRate * Gdx.graphics.getDeltaTime() * playerStats.fmult;
 			playerStats.sandetite += this.sandetiteProductionRate * Gdx.graphics.getDeltaTime() * playerStats.smult;
