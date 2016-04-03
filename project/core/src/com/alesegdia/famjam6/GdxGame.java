@@ -2,11 +2,13 @@ package com.alesegdia.famjam6;
 
 import com.alesegdia.famjam6.asset.Gfx;
 import com.alesegdia.famjam6.screen.GameplayScreen;
+import com.alesegdia.famjam6.screen.InstructionsScreen;
 import com.alesegdia.famjam6.screen.SplashScreen;
 import com.alesegdia.famjam6.util.RNG;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,6 +23,7 @@ public class GdxGame extends Game {
 	
 	public ShapeRenderer srend;
 	public OrthographicCamera cam;
+	public OrthographicCamera cam2;
 	public OrthographicCamera menuCam;
 	public OrthographicCamera textCam;
 	
@@ -29,8 +32,8 @@ public class GdxGame extends Game {
 	public BitmapFont fontRlyBig;
 	
 	public GameplayScreen gameplayScreen;
-
 	private SplashScreen splashScreen;
+	public InstructionsScreen instructionsScreen;
 	
 	
 	@Override
@@ -58,6 +61,11 @@ public class GdxGame extends Game {
         menuCam.position.set(menuCam.viewportWidth / 2f, menuCam.viewportHeight / 2f, 0);
         menuCam.update();
         
+        cam2 = new OrthographicCamera();
+        cam2.setToOrtho(false, GameConfig.WINDOW_WIDTH, GameConfig.WINDOW_HEIGHT);
+        cam2.position.set(menuCam.viewportWidth / 2f, menuCam.viewportHeight / 2f, 0);
+        cam2.update();
+        
         // text camera setup
         textCam = new OrthographicCamera();
         textCam.setToOrtho(false, 800, 600);
@@ -79,6 +87,7 @@ public class GdxGame extends Game {
         
         splashScreen = new SplashScreen(this);
         gameplayScreen = new GameplayScreen(this);
+        instructionsScreen = new InstructionsScreen(this);
         
         setScreen(splashScreen);
 
