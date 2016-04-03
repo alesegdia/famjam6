@@ -10,8 +10,9 @@ public class Tool {
 	public static final int PLACE_PTRANSP = 5;
 	public static final int PLACE_BASE    = 6;
 	public static final int DESTROY       = 7;
-	public static final int SELECT       = 8;
-	public static final int NUM_TOOLS 	  = 9;
+	public static final int SELECT		  = 8;
+	public static final int DURIRO		  = 9;
+	public static final int NUM_TOOLS 	  = 10;
 	
 	public static String getToolString( int t )
 	{
@@ -25,6 +26,7 @@ public class Tool {
 		case PLACE_PTRANSP: return "power transport";
 		case PLACE_BASE: return "base extension";
 		case DESTROY: return "destroy";
+		case DURIRO: return "drill";
 		default: return "<INVALID TOOL>";
 		}
 	}
