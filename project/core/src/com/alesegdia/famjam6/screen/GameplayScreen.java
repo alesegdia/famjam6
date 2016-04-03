@@ -293,7 +293,7 @@ public class GameplayScreen implements Screen {
 
 		
 		float speed = 1f;//0.5f;
-		float scrollThreshold = 100;
+		float scrollThreshold = 50;
 		
 		if( Gdx.input.isKeyJustPressed(Input.Keys.TAB) )
 		{
@@ -302,15 +302,11 @@ public class GameplayScreen implements Screen {
 		
 		if( Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ) speed = 1.f;
 		
-		if( !this.isMenuOpened )
-		{
-			if( Gdx.input.getX() < scrollThreshold) realCamPos.x -= speed;
-			if( Gdx.input.getX() > GameConfig.WINDOW_WIDTH - scrollThreshold) realCamPos.x += speed;
-			if( Gdx.input.getY() < scrollThreshold) realCamPos.y += speed;
-			if( Gdx.input.getY() > GameConfig.WINDOW_HEIGHT - scrollThreshold) realCamPos.y -= speed;
-		}
+		if( Gdx.input.getX() < scrollThreshold) realCamPos.x -= speed;
+		if( Gdx.input.getX() > GameConfig.WINDOW_WIDTH - scrollThreshold) realCamPos.x += speed;
+		if( Gdx.input.getY() < scrollThreshold) realCamPos.y += speed;
+		if( Gdx.input.getY() > GameConfig.WINDOW_HEIGHT - scrollThreshold) realCamPos.y -= speed;
 		
-		System.out.println(playerStatus.froncetite);
 		float l = GameConfig.VIEWPORT_WIDTH / 2f;
 		float b = GameConfig.VIEWPORT_HEIGHT / 2f;
 		float r = this.scenario.widthInTiles() * 8f - GameConfig.VIEWPORT_WIDTH / 2f;
