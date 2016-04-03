@@ -4,8 +4,8 @@ import com.alesegdia.famjam6.GameConstants;
 
 public class PlayerStatus {
 
-	public float froncetite = GameConstants.INITIAL_FRONCETITE;
-	public float sandetite = GameConstants.INITIAL_SANDETITE;
+	public float froncetite = 0;
+	public float sandetite = 0;
 	public float power;
 	
 	public float fmult = 1;
@@ -17,9 +17,7 @@ public class PlayerStatus {
 	public boolean godMode = false;
 	
 	public int getPowerPercent() {
-		float k = Math.round((Math.round(this.power) * 100) / GameConstants.POWER_MAX );
-		k = Math.round(k / 5f) * 5f;
-		return Math.round(k);
+		return (int) ((Math.round(this.power * 100) / GameConstants.POWER_MAX));
 	}
 	
 }
