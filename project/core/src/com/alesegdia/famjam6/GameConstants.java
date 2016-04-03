@@ -41,6 +41,6 @@ public class GameConstants {
 	public static final float INITIAL_FRONCETITE = 50f;
 	public static final float INITIAL_SANDETITE = 50f;
 
-	public static final float POWER_MAX = 100;
+	public static final float POWER_MAX = 1000;
 
 }
