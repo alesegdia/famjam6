@@ -28,6 +28,7 @@ public class Gfx {
 	public static TextureRegion froncetiteSymTr;
 	public static TextureRegion sandetiteSymTr;
 	public static TextureRegion duriroTr;
+	public static Texture splashIcon;
 
 	public static void Initialize()
 	{
@@ -60,6 +61,8 @@ public class Gfx {
 		sandetiteSymTr = tileset.get(23);
 		froncetiteSymTr = tileset.get(22);
 		duriroTr = tileset.get(24);
+		
+		splashIcon = new Texture("splash.png");
 		
 	}
 
