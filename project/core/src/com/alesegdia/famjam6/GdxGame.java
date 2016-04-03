@@ -9,6 +9,7 @@ import com.alesegdia.famjam6.util.RNG;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -101,5 +102,10 @@ public class GdxGame extends Game {
 	@Override
 	public void render () {
 		super.render();
+		if( Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) )
+		{
+			Gdx.app.exit();
+		}
+
 	}
 }
