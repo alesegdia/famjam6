@@ -213,13 +213,13 @@ public class GameplayScreen implements Screen {
 			g.batch.draw(Gfx.powerTransportTr[1], 720, 400, 0, 0, 8, 8, sc, sc, 0);
 			
 			g.batch.draw(Gfx.baseExtensionTr, 640, 340, 0, 0, 8, 8, sc, sc, 0);
+			g.batch.draw(Gfx.duriroTr, 720, 340, 0, 0, 8, 8, sc, sc, 0);
 			
 			g.batch.draw(Gfx.deleteTr, 640, 280, 0, 0, 8, 8, sc, sc, 0);
 			g.batch.draw(Gfx.cursorTr, 720, 280, 0, 0, 8, 8, sc, sc, 0);
 
 			g.batch.end();
 			
-			int sz = 8*4;
 			if( clickIn(640, 520, sz, sz) ) this.currentTool = Tool.PLACE_FGATHER;
 			if( clickIn(720, 520, sz, sz) ) this.currentTool = Tool.PLACE_FTRANSP;
 			
@@ -230,6 +230,8 @@ public class GameplayScreen implements Screen {
 			if( clickIn(720, 400, sz, sz) ) this.currentTool = Tool.PLACE_PTRANSP;
 			
 			if( clickIn(640, 340, sz, sz) ) this.currentTool = Tool.PLACE_BASE;
+			if( clickIn(720, 340, sz, sz) ) this.currentTool = Tool.DURIRO;
+
 			if( clickIn(640, 280, sz, sz) ) this.currentTool = Tool.DESTROY;
 			if( clickIn(720, 280, sz, sz) ) this.currentTool = Tool.SELECT;
 		}
