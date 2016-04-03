@@ -76,7 +76,6 @@ public class GameplayScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
         g.cam.update();
         g.batch.setProjectionMatrix(g.cam.combined);
 		g.batch.begin();
@@ -241,7 +240,7 @@ public class GameplayScreen implements Screen {
 		int sc = 5;
 
 		g.batch.draw(Gfx.powerTr, 10, 550, 0, 0, 8, 8, sc, sc, 0);
-		g.font.draw(g.batch, "" + Math.round(playerStatus.getPowerPercent()) + "%", 60, 580);
+		g.font.draw(g.batch, "" + Math.floor(playerStatus.getPowerPercent()) + "%", 60, 580);
 
 		g.batch.draw(Gfx.froncetiteSymTr, 10, 510, 0, 0, 8, 8, sc, sc, 0);
 		g.font.draw(g.batch, "" + Math.round(playerStatus.froncetite), 60, 540);
