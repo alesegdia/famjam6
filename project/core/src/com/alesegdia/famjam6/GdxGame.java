@@ -2,6 +2,8 @@ package com.alesegdia.famjam6;
 
 import com.alesegdia.famjam6.asset.Gfx;
 import com.alesegdia.famjam6.screen.GameplayScreen;
+import com.alesegdia.famjam6.screen.SplashScreen;
+import com.alesegdia.famjam6.util.RNG;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -27,10 +29,14 @@ public class GdxGame extends Game {
 	public BitmapFont fontRlyBig;
 	
 	public GameplayScreen gameplayScreen;
+
+	private SplashScreen splashScreen;
 	
 	
 	@Override
 	public void create () {
+		
+		RNG.rng = new RNG();
 		
 		Gdx.input.setCursorCatched(true);
 		
@@ -48,7 +54,7 @@ public class GdxGame extends Game {
 
         // menu camera setup
         menuCam = new OrthographicCamera();
-        menuCam.setToOrtho(false, GameConfig.VIEWPORT_WIDTH * GameConfig.METERS_TO_PIXELS, GameConfig.VIEWPORT_HEIGHT * GameConfig.METERS_TO_PIXELS);
+        menuCam.setToOrtho(false, GameConfig.VIEWPORT_WIDTH, GameConfig.VIEWPORT_HEIGHT);
         menuCam.position.set(menuCam.viewportWidth / 2f, menuCam.viewportHeight / 2f, 0);
         menuCam.update();
         
@@ -63,15 +69,18 @@ public class GdxGame extends Game {
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 32;
 		font = generator.generateFont(parameter); // font size 12 pixels
+		parameter.size = 30;
+
 		fontBig = generator.generateFont(parameter); // font size 12 pixels
 		fontRlyBig = generator.generateFont(parameter); // font size 12 pixels
         
 		// assets setup
         Gfx.Initialize();
         
+        splashScreen = new SplashScreen(this);
         gameplayScreen = new GameplayScreen(this);
         
-        setScreen(gameplayScreen);
+        setScreen(splashScreen);
 
 		generator.dispose();
 		
