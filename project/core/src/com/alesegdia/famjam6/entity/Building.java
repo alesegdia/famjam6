@@ -31,7 +31,7 @@ public class Building {
 	
 	public void update( PlayerStatus stats )
 	{
-		stats.power -= this.energyConsupmtionRate * Gdx.graphics.getDeltaTime();
+		stats.power -= this.energyConsupmtionRate;
 	}
 	
 	public final void destroyed( PlayerStatus stats )

@@ -120,10 +120,13 @@ public class Scenario {
 	
 	public void update()
 	{
+		playerStatus.power = 0;
+		
 		for( Building b : this.buildingsList )
 		{
 			b.update(playerStatus);
 		}
+		playerStatus.power *= 0.016f;
 		
 		if( this.playerStatus.power < 0 )
 		{
