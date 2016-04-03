@@ -169,134 +169,138 @@ public class Scenario {
 					// BOOM!!
 					if( b == null )	assert(false);
 					
-					boolean canPlace = true;
-					
-					float vt = this.terrainMap[scx][scy];
-					if( b instanceof FroncetiteGatherer )
+					if( b.canBuy(playerStatus) )
 					{
-						if( vt >= 0.2f )
-						{
-							canPlace = false;							
-						}
-						else
-						{
-							if( !this.checkNeighboors(scx, scy, this.fTransportMap) )
-							{
-								canPlace = false;
-							}
-						}
-					}
-					
-					if(b instanceof SandetiteGatherer )
-					{
-						if( vt <= 0.8f )
-						{
-							canPlace = false;
-						}
-						else
-						{
-							if( !this.checkNeighboors(scx, scy, this.sTransportMap) )
-							{
-								canPlace = false;
-							}
-						}
-					}
-					
-					if( b instanceof PowerPlant	)
-					{
-						if(vt < 0.2f || vt >= 0.8f)
-						{
-							canPlace = false;						
-						}
-						else
-						{
-							if( !this.checkNeighboors(scx, scy, this.pTransportMap) )
-							{
-								canPlace = false;
-							}
-						}
-					}
-					
-					if( b instanceof BaseExtension )
-					{
-						if(vt < 0.2f || vt >= 0.8f)
-						{
-							canPlace = false;						
-						}
-					}
-					
-					if( b instanceof PowerTransport )
-					{
-						if( !this.checkNeighboors(scx, scy, pGatherMap) && !this.checkNeighboors(scx, scy, pTransportMap) && !this.checkNeighboors(scx, scy, baseMap) )
-						{
-							canPlace = false;
-						}
-					}
-					if( b instanceof FroncetiteTransport )
-					{
-						if( !this.checkNeighboors(scx, scy, fGatherMap) && !this.checkNeighboors(scx, scy, fTransportMap) && !this.checkNeighboors(scx, scy, baseMap) )
-						{
-							canPlace = false;
-						}
-					}
-					if( b instanceof SandetiteTransport )
-					{
-						if( !this.checkNeighboors(scx, scy, sGatherMap) && !this.checkNeighboors(scx, scy, sTransportMap) && !this.checkNeighboors(scx, scy, baseMap) )
-						{
-							canPlace = false;
-						}
-					}
-					
-					if( canPlace )
-					{
-						if( b instanceof SandetiteTransport )
-						{
-							this.sTransportMap[scx][scy] = b;
-						}
+						boolean canPlace = true;
 						
-						if( b instanceof PowerTransport )
-						{
-							this.pTransportMap[scx][scy] = b;
-						}
-						
-						if( b instanceof FroncetiteTransport )
-						{
-							this.fTransportMap[scx][scy] = b;
-						}
-						
-						if( b instanceof SandetiteGatherer )
-						{
-							this.sGatherMap[scx][scy] = b;
-						}
-						
-						if( b instanceof PowerPlant )
-						{
-							this.pGatherMap[scx][scy] = b;
-						}
-						
+						float vt = this.terrainMap[scx][scy];
 						if( b instanceof FroncetiteGatherer )
 						{
-							this.fGatherMap[scx][scy] = b;
+							if( vt >= 0.2f )
+							{
+								canPlace = false;							
+							}
+							else
+							{
+								if( !this.checkNeighboors(scx, scy, this.fTransportMap) )
+								{
+									canPlace = false;
+								}
+							}
+						}
+						
+						if(b instanceof SandetiteGatherer )
+						{
+							if( vt <= 0.8f )
+							{
+								canPlace = false;
+							}
+							else
+							{
+								if( !this.checkNeighboors(scx, scy, this.sTransportMap) )
+								{
+									canPlace = false;
+								}
+							}
+						}
+						
+						if( b instanceof PowerPlant	)
+						{
+							if(vt < 0.2f || vt >= 0.8f)
+							{
+								canPlace = false;						
+							}
+							else
+							{
+								if( !this.checkNeighboors(scx, scy, this.pTransportMap) )
+								{
+									canPlace = false;
+								}
+							}
 						}
 						
 						if( b instanceof BaseExtension )
 						{
-							this.baseMap[scx][scy] = b;
+							if(vt < 0.2f || vt >= 0.8f)
+							{
+								canPlace = false;						
+							}
 						}
 						
-						
-						b.setPosition(scx, scy);
-						this.buildingsMap[scx][scy] = b;
-						this.buildingsList.add(b);
-						
-						this.buildingsGraphicsMap[scx][scy] = getBuildingTile(b, scx, scy);
-						
-						if( b instanceof Gatherer )
+						if( b instanceof PowerTransport )
 						{
-							this.gathererList.add((Gatherer)b);
+							if( !this.checkNeighboors(scx, scy, pGatherMap) && !this.checkNeighboors(scx, scy, pTransportMap) && !this.checkNeighboors(scx, scy, baseMap) )
+							{
+								canPlace = false;
+							}
 						}
-						notifyBuildingAdded( scx, scy, b );
-						okop = true;					
+						if( b instanceof FroncetiteTransport )
+						{
+							if( !this.checkNeighboors(scx, scy, fGatherMap) && !this.checkNeighboors(scx, scy, fTransportMap) && !this.checkNeighboors(scx, scy, baseMap) )
+							{
+								canPlace = false;
+							}
+						}
+						if( b instanceof SandetiteTransport )
+						{
+							if( !this.checkNeighboors(scx, scy, sGatherMap) && !this.checkNeighboors(scx, scy, sTransportMap) && !this.checkNeighboors(scx, scy, baseMap) )
+							{
+								canPlace = false;
+							}
+						}
+						
+						if( canPlace )
+						{
+							if( b instanceof SandetiteTransport )
+							{
+								this.sTransportMap[scx][scy] = b;
+							}
+							
+							if( b instanceof PowerTransport )
+							{
+								this.pTransportMap[scx][scy] = b;
+							}
+							
+							if( b instanceof FroncetiteTransport )
+							{
+								this.fTransportMap[scx][scy] = b;
+							}
+							
+							if( b instanceof SandetiteGatherer )
+							{
+								this.sGatherMap[scx][scy] = b;
+							}
+							
+							if( b instanceof PowerPlant )
+							{
+								this.pGatherMap[scx][scy] = b;
+							}
+							
+							if( b instanceof FroncetiteGatherer )
+							{
+								this.fGatherMap[scx][scy] = b;
+							}
+							
+							if( b instanceof BaseExtension )
+							{
+								this.baseMap[scx][scy] = b;
+							}
+							
+							
+							b.setPosition(scx, scy);
+							this.buildingsMap[scx][scy] = b;
+							this.buildingsList.add(b);
+							
+							this.buildingsGraphicsMap[scx][scy] = getBuildingTile(b, scx, scy);
+							
+							if( b instanceof Gatherer )
+							{
+								this.gathererList.add((Gatherer)b);
+							}
+							notifyBuildingAdded( scx, scy, b );
+							okop = true;					
+						}
+					
 					}
 				}
 			}

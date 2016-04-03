@@ -49,4 +49,9 @@ public class Building {
 		stats.sandetite += baseSandetiteCost * GameConstants.DESTROY_REWARD_RATE;
 	}
 	
+	public boolean canBuy( PlayerStatus stats )
+	{
+		return stats.froncetite - this.baseFroncetiteCost >= 0 && stats.sandetite - this.baseSandetiteCost >= 0;
+	}
+	
 }
