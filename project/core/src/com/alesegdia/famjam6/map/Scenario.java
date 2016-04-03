@@ -471,7 +471,10 @@ public class Scenario {
 	}
 
 	private void notifyBuildingAdded(int scx, int scy, Building b) {
-		b.applyCost(playerStatus);
+		if( !playerStatus.godMode )
+		{
+			b.applyCost(playerStatus);
+		}
 		checkAllGatherersConnectivity();
 		System.out.println("==================");
 	}

@@ -14,8 +14,12 @@ public class PlayerStatus {
 	
 	public float dmult = 1;
 	
-	public float getPowerPercent() {
-		return this.power * 100 / GameConstants.POWER_MAX;
+	public boolean godMode = false;
+	
+	public int getPowerPercent() {
+		float k = Math.round((Math.round(this.power) * 100) / GameConstants.POWER_MAX );
+		k = Math.round(k / 5f) * 5f;
+		return Math.round(k);
 	}
 	
 }
